@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>General Report</title>
+
+    <!-- Bootstrap Style -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Our Style -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>General Report</h1>
+        <div class="row">
+            <!-- Left Section -->
+            <div class="col">
+                <h2>Admin</h2>
+                <div class="row">
+                    <!-- Officer Reporting -->
+                    <div class="form-group col-md-6">
+                        <label for="officerReporting">Officer Reporting</label>
+                        <input type="text" class="form-control" id="officerReporting">
+                    </div>
+                    <!-- IHS Case Number -->
+                    <div class="form-group col-md-6">
+                        <label for="ihsCase">IHS Case #</label>
+                        <input type="text" class="form-control" id="ihsCase">
+                    </div>
+                </div>
+                
+                <h2>Incident</h2>
+                <!-- Date Occured -->
+                <label for="datetime-occurred-from">Date & Time Occured</label>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <small id="fromHelp" class="form-text text-muted">From</small>
+                        <input type="datetime-local" class="form-control" aria-describedby="fromHelp" id="occurredFrom">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <small id="toHelp" class="form-text text-muted">To</small>
+                        <input type="datetime-local" class="form-control" aria-describedby="toHelp" id="occurredTo">
+                    </div>
+                </div>
+                <!-- Date Reported -->
+                <div class="form-group">
+                    <label for="datetimeReported">Date & Time Reported</label>
+                    <input type="datetime-local" class="form-control" id="datetimeReported">
+                </div>
+                <!-- Location -->
+                <div class="form-group">
+                    <label for="location">Location of Occurrence</label>
+                    <input type="text" class="form-control" id="location">
+                </div>
+                <!-- Juristdiction -->
+                <div class="form-group">
+                    <label for="jurisdiction">Jurisdiction</label>
+                    <input type="text" class="form-control" id="jurisdiction">
+                </div>
+
+                <h2>Probable Cause</h2>
+                <!-- Probably Cause -->
+                <div class="form-group">
+                    <label for="probableCause">Describe what happened</label>
+                    <textarea class="form-control" id="probableCause" rows="5"></textarea>
+                </div>
+                
+                <!-- Header for Charges -->
+                <div class="row">
+                    <div class="col">
+                        <p id="total-charges">Charges: 0</p>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#chargesModal">Edit Charges</button>
+                    </div>
+                </div>
+
+                <!-- Modal For Charges -->
+                <div class="modal fade" id="chargesModal" tabindex="-1" role="dialog" aria-labelledby="chargesModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="chargesModalLabel">Charges</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- Inputs to add charge -->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="charge">Offense/Charge</label>
+                                            <input type="text" class="form-control" id="charge">
+                                        </div>
+                                        <div class="row">
+                                            <!-- Law Section -->
+                                            <div class="form-group col-md-6">
+                                                <label for="lawSection">Law Section</label>
+                                                <input type="text" class="form-control" id="lawSection">
+                                            </div>
+                                            <!-- Severity -->
+                                            <div class="form-group col-md-6">
+                                                <label for="severity">Severity</label>
+                                                <select id="severity" class="form-control">
+                                                    <option selected>Misdemeanor</option>
+                                                    <option>Felony</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Show Charges -->
+                                    <div class="col" id="show-charge">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" onclick="modalAdd('charges')">Add</button>
+                                <button type="button" class="btn btn-danger" onclick="modalDelete('charges')">Delete</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="chargesModal">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <!-- Header for People Involved -->
+                <div class="row">
+                    <div class="col">
+                        <p id="total-people">People Involved: 0</p>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#peopleModal">Edit People Involved</button>
+                    </div>
+                </div>
+
+                <!-- Modal For People -->
+                <div class="modal fade" id="peopleModal" tabindex="-1" role="dialog" aria-labelledby="peopleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="peopleModalLabel">People Involved</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- Inputs to add people -->
+                                    <div class="col">
+                                        <div class="row">
+                                            <!-- Type -->
+                                            <div class="form-group col-md-4">
+                                                <label for="peopleType">Type</label>
+                                                <select id="peopleType" class="form-control">
+                                                    <option selected>Suspect</option>
+                                                    <option>Victim</option>
+                                                </select>
+                                            </div>
+                                            <!-- SSN -->
+                                            <div class="form-group col-md-8">
+                                                <label for="ssn">SSN</label>
+                                                <input type="text" class="form-control" id="ssn">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!-- Names -->
+                                            <div class="form-group col-md-4">
+                                                <label for="firstName">First Name</label>
+                                                <input type="text" class="form-control" id="firstName">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="middleName">Middle Name</label>
+                                                <input type="text" class="form-control" id="middleName">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="lastName">Last Name</label>
+                                                <input type="text" class="form-control" id="lastName">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!-- Address -->
+                                            <div class="form-group col-md-12">
+                                                <label for="address">Address</label>
+                                                <input type="text" class="form-control" id="address">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!-- Race -->
+                                            <div class="form-group col-md-3">
+                                                <label for="race">Race</label>
+                                                <input type="text" class="form-control" id="race">
+                                            </div>
+                                            <!-- Sex -->
+                                            <div class="form-group col-md-3">
+                                                <label for="sex">Sex</label>
+                                                <select id="sex" class="form-control">
+                                                    <option selected>M</option>
+                                                    <option>F</option>
+                                                </select>
+                                            </div>
+                                            <!-- Date of Birth -->
+                                            <div class="form-group col-md-6">
+                                                <label for="dob">DOB</label>
+                                                <input type="date" class="form-control" id="dob">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!-- Height -->
+                                            <div class="form-group col-md-3">
+                                                <label for="height">Height</label>
+                                                <input type="text" class="form-control" id="height">
+                                            </div>
+                                            <!-- Weight -->
+                                            <div class="form-group col-md-3">
+                                                <label for="weight">Weight</label>
+                                                <input type="text" class="form-control" id="weight">
+                                            </div>
+                                            <!-- Hair Color -->
+                                            <div class="form-group col-md-3">
+                                                <label for="hair">Hair Color</label>
+                                                <input type="text" class="form-control" id="hair">
+                                            </div>
+                                            <!-- Eye Color -->
+                                            <div class="form-group col-md-3">
+                                                <label for="eye">Eye Color</label>
+                                                <input type="text" class="form-control" id="eye">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!-- Phone Number -->
+                                            <div class="form-group col-md-5">
+                                                <label for="phoneNumber">Phone Number</label>
+                                                <input type="text" class="form-control" id="phoneNumber">
+                                            </div>
+                                            <!-- Email -->
+                                            <div class="form-group col-md-7">
+                                                <label for="email">Email</label>
+                                                <input type="email" class="form-control" id="email">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!-- License # -->
+                                            <div class="form-group col-md-5">
+                                                <label for="license">License #</label>
+                                                <input type="text" class="form-control" id="license">
+                                            </div>
+                                            <!-- State -->
+                                            <div class="form-group col-md-3">
+                                                <label for="state">State</label>
+                                                <select id="state" class="form-control">
+                                                    <option selected>ID</option>
+                                                </select>
+                                            </div>
+                                            <!-- How Identify -->
+                                            <div class="form-group col-md-4">
+                                                <label for="howIdentify">How Identify?</label>
+                                                <select id="howIdentify" class="form-control">
+                                                    <option selected>State ID</option>
+                                                    <option>Verbal</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Show People -->
+                                    <div class="col" id="show-people">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" onclick="modalAdd('people')">Add</button>
+                                <button type="button" class="btn btn-danger" onclick="modalDelete('people')">Delete</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="peopleModal">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Header for Other Officers Involved -->
+                <div class="row">
+                    <div class="col">
+                        <p id="total-officers">Other Officers: 0</p>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#officersModal">Edit Officers Involved</button>
+                    </div>
+                </div>
+
+                <!-- Modal For Officers -->
+                <div class="modal fade" id="officersModal" tabindex="-1" role="dialog" aria-labelledby="officersModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="officersModalLabel">Officers Involved</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- Inputs to add officers -->
+                                    <div class="col">
+                                        <!-- Officer Identifier -->
+                                        <div class="row">
+                                            <div class="form-group col-md-8">
+                                                <label for="officerName">Officer's Name</label>
+                                                <input type="text" class="form-control" id="officerName">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="officerId">Officer's #</label>
+                                                <input type="text" class="form-control" id="officerId">
+                                            </div>
+                                        </div>
+                                        <!-- Officer Check Boxes -->
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="audio">
+                                            <label class="form-check-label" for="audio">Audio</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="video">
+                                            <label class="form-check-label" for="audio">Video</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="supp">
+                                            <label class="form-check-label" for="supp">Suppl.</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="pics">
+                                            <label class="form-check-label" for="pics">Pics</label>
+                                        </div>
+                                    </div>
+                                    <!-- Show Officers -->
+                                    <div class="col" id="show-officers">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" onclick="modalAdd('officers')">Add</button>
+                                <button type="button" class="btn btn-danger" onclick="modalDelete('officers')">Delete</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="officersModal">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Section -->
+            <div class="col">
+                <iframe src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our JS -->
+    <script src="./states.js" ></script>
+    <script src="./logic.js" ></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

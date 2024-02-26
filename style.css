@@ -1,0 +1,14 @@
+.pd-l-15 {
+  padding-left: 15px;
+}
+
+#total-charges, #total-people, #total-officers {
+  font-size: 20px;
+}
+
+@media (min-width: 768px) {
+  .modal-xl {
+    width: 90%;
+   max-width:1200px;
+  }
+}
