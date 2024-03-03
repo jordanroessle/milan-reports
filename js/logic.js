@@ -4,82 +4,133 @@ const data = {
   officers: []
 }
 
-// Modal Add
-const modalAdd = (modalType) => {
-  let modalData = {}
-
-  switch (modalType) {
-    case 'charges':
-      // Grab Data
-      const charge = {
-        charge: document.getElementById('charge').value,
-        law: document.getElementById('lawSection').value,
-        severity: document.getElementById('severity').value,
-        id: self.crypto.randomUUID()
-      }
-
-      // Update globals
-      data.charges.push(charge)
-      updateTotalCharges()
-      children: [ createElement('label', { class: 'col-md-6' }, charge.law), createElement('label', { class: 'col-md-6' }, charge.severity)]
-
-      // Modal Data
-      modalData = {
-        id: charge.id,
-        appendHere: 'show-charge',
-        mainText: charge.charge,
-        children: [
-          createElement('label', { class: 'col-md-6' }, charge.law),
-          createElement('label', { class: 'col-md-6' }, charge.severity)
-        ]
-      }
-
-
-      // Clear fields after grabbing data
-      document.getElementById('charge').value = ''
-      document.getElementById('lawSection').value = ''
-
-      break
-    case 'officers':
-      // Grab Data
-      const officer = {
-        officerName: document.getElementById('officerName').value,
-        officerId: document.getElementById('officerId').value,
-        resource: [],
-        id: self.crypto.randomUUID()
-      }
-
-      let text = ''
-      const resources = ['audio', 'video', 'supp', 'pics']
-      resources.forEach(resource => {
-        if (document.getElementById(resource).checked) {
-          const capitalizeResource = resource.charAt(0).toUpperCase() + resource.slice(1)
-          officer.resource.push(capitalizeResource)
-          text += capitalizeResource
-          text += ', '
-        }
-      })
-      text = text.substring(0, text.length - 2)
-
-      // Update globals
-      data.officers.push(officer)
-      updateTotalOfficers()
-
-      // Modal Data
-      modalData = {
-        id: officer.id,
-        appendHere: 'show-officers',
-        mainText: `${officer.officerName} (${officer.officerId})`,
-        children: [ createElement('label', { class: 'col-md-12', for: officer.id }, text)]
-      }
-
-      break
-    default:
-      console.error('Incorrectly called modalAdd function')
+// Add People 
+const addPeople = () => {
+  // Grab Data
+  const person = {
+    peopleType: document.getElementById('peopleType').value,
+    ssn: document.getElementById('ssn').value,
+    firstName: document.getElementById('firstName').value,
+    middleName: document.getElementById('middleName').value,
+    lastName: document.getElementById('lastName').value,
+    addressLineOne: document.getElementById('addressLineOne').value,
+    addressLineTwo: document.getElementById('addressLineTwo').value,
+    race: document.getElementById('race').value,
+    sex: document.getElementById('sex').value,
+    dob: document.getElementById('dob').value,
+    height: document.getElementById('height').value,
+    weight: document.getElementById('weight').value,
+    hair: document.getElementById('hair').value,
+    eye: document.getElementById('eye').value,
+    phoneNumber: document.getElementById('phoneNumber').value,
+    email: document.getElementById('email').value,
+    license: document.getElementById('license').value,
+    state: document.getElementById('state').value,
+    howIdentify: document.getElementById('howIdentify').value,
+    id: self.crypto.randomUUID()
   }
 
+  // Update globals
+  data.people.push(person)
+  updateTotalPeople()
+
+  // Modal Data
+  modalData = {
+    id: person.id,
+    appendHere: 'show-people',
+    mainText: `${person.peopleType}: ${person.firstName} ${person.lastName}`,
+    children: [ createElement('label', { class: 'col-md-12', for: person.id }, `SSN: ${person.ssn}`) ]
+  }
+
+
+  // Clear input fields after grabbing data
+  Object.keys(person).forEach(key => {
+    if (key !== 'id' && key !== 'peopleType' && key !== 'sex' && key !== 'state' && key !== 'howIdentify')
+      document.getElementById(key).value = ''
+  })
+
+  // Add Preview
+  modalAddPreview(modalData)
+}
+
+// Add Charge
+const addCharges = () => {
+  // Grab Data
+  const charge = {
+    charge: document.getElementById('charge').value,
+    law: document.getElementById('law').value,
+    severity: document.getElementById('severity').value,
+    committedBy: document.getElementById('committedBy').value,
+    id: self.crypto.randomUUID()
+  }
+
+  // Update globals
+  data.charges.push(charge)
+  updateTotalCharges()
+
+  // Modal Data
+  modalData = {
+    id: charge.id,
+    appendHere: 'show-charge',
+    mainText: `${charge.severity} by ${charge.committedBy}`,
+    children: [createElement('label', { class: 'col-md-12', for: charge.id }, charge.charge)]
+  }
+
+  // Clear input fields after grabbing data
+  document.getElementById('charge').value = ''
+  document.getElementById('law').value = ''
+
+  // Add Preview
+  modalAddPreview(modalData)
+}
+
+// Add Officer
+const addOfficers = () => {
+  // Grab Data
+  const officer = {
+    officerName: document.getElementById('officerName').value,
+    officerId: document.getElementById('officerId').value,
+    resource: [],
+    id: self.crypto.randomUUID()
+  }
+
+  let text = ''
+  const resources = ['audio', 'video', 'supp', 'pics']
+  resources.forEach(resource => {
+    if (document.getElementById(resource).checked) {
+      const capitalizeResource = resource.charAt(0).toUpperCase() + resource.slice(1)
+      officer.resource.push(capitalizeResource)
+      text += capitalizeResource
+      text += ', '
+    }
+  })
+  text = text.substring(0, text.length - 2)
+
+  // Update globals
+  data.officers.push(officer)
+  updateTotalOfficers()
+
+  // Modal Data
+  modalData = {
+    id: officer.id,
+    appendHere: 'show-officers',
+    mainText: `${officer.officerName} (${officer.officerId})`,
+    children: [ createElement('label', { class: 'col-md-12', for: officer.id }, text)]
+  }
+
+  // Clear input fields after grabbing data
+  document.getElementById('officerName').value = ''
+  document.getElementById('officerId').value = ''
+  officerCheckboxes.forEach(checkbox => document.getElementById(checkbox).checked = false)
+
+  // Add Preview
+  modalAddPreview(modalData)
+}
+
+// Modal Add Preview
+const modalAddPreview = (modalData) => {
   // Create Elements
-  const container = createElement('div', { className: 'form-check' })
+  const container = createElement('div', { className: 'row' })
   const checkbox = createElement('input', {
     class: 'form-check-input',
     type: 'checkbox',
@@ -89,8 +140,8 @@ const modalAdd = (modalType) => {
     class: 'form-check-label col-md-12',
     for: modalData.id
   }, modalData.mainText)
-  const desc = createElement('div', { class: 'row pd-l-15' })
 
+  const desc = createElement('div', { class: 'row pd-l-15' })
   modalData.children.forEach(child => {
     desc.appendChild(child)
   })
@@ -143,107 +194,94 @@ const modalDelete = (modalType) => {
   updateTotalOfficers()
 }
 
-// Modal Add People (this one is too complicated and requires its own function)
-const addPeople = () => {
-  // Grab Data
-  const person = {
-    peopleType: document.getElementById('peopleType').value,
-    ssn: document.getElementById('ssn').value,
-    firstName: document.getElementById('firstName').value,
-    middleName: document.getElementById('middleName').value,
-    lastName: document.getElementById('lastName').value,
-    addressLineOne: document.getElementById('addressLineOne').value,
-    addressLineTwo: document.getElementById('addressLineTwo').value,
-    race: document.getElementById('race').value,
-    sex: document.getElementById('sex').value,
-    dob: document.getElementById('dob').value,
-    height: document.getElementById('height').value,
-    weight: document.getElementById('weight').value,
-    hair: document.getElementById('hair').value,
-    eye: document.getElementById('eye').value,
-    phoneNumber: document.getElementById('phoneNumber').value,
-    email: document.getElementById('email').value,
-    license: document.getElementById('license').value,
-    state: document.getElementById('state').value,
-    howIdentify: document.getElementById('howIdentify').value,
-    id: self.crypto.randomUUID()
-  }
+// Update Suspect list in charges modal
+const updateSuspectList = () => {
+  const dropdown = document.getElementById('committedBy')
+  dropdown.innerHTML = ''
 
-  // Update globals
-  data.people.push(person)
-  updateTotalPeople()
-
-  // Modal Data
-  modalData = {
-    id: person.id,
-    appendHere: 'show-people',
-    mainText: `${person.peopleType}: ${person.firstName} ${person.lastName}`,
-    children: [
-      {
-        text: person.ssn,
-        className: 'col-md-12'
-      }
-    ]
-  }
-
-  // Clear input fields
-  Object.keys(person).forEach(key => {
-    if (key !== 'id' && key !== 'peopleType' && key !== 'sex' && key !== 'state' && key !== 'howIdentify')
-      document.getElementById(key).value = ''
+  const suspects = data.people.filter(x => x.peopleType === 'Suspect')
+  suspects.forEach(suspect => {
+    const option = createElement('option', {}, `${suspect.firstName} ${suspect.lastName}`)
+    dropdown.appendChild(option)
   })
-
-  // Create Elements
-  const container = createElement('div', { class: 'row' })
-  const leftSide = createElement('div', { class: 'col-md-6' })
-  const rightSide = document.createElement('div')
-  rightSide.className = 'col-md-6'
-
-  // Left Side
-  const checkbox = document.createElement('input')
-  checkbox.className = 'form-check-input'
-  checkbox.type = 'checkbox'
-  checkbox.id = modalData.id
-
-  const label = document.createElement('label')
-  label.className = 'form-check-label col-md-12'
-  label.setAttribute('for', modalData.id)
-  label.textContent = modalData.mainText
-
-  const desc = document.createElement('div')
-  desc.className = 'row pd-l-15'
-
-  modalData.children.forEach(child => {
-    const e = document.createElement('label')
-    e.className = child.className
-    e.setAttribute('for', modalData.id)
-    e.textContent = child.text
-    desc.appendChild(e)
-  })
-
-  leftSide.appendChild(checkbox)
-  leftSide.appendChild(label)
-  leftSide.appendChild(desc)
-
-  // // Right side
-  // if (person.peopleType === 'Suspect' && data.charges.length > 0) {
-  //   data.charges.forEach(charge => {
-  //     const id = self.crypto.randomUUID()
-
-  //     const chargeCheckBox = document.createElement('input')
-  //     chargeCheckBox.className = 'form-check-input'
-  //     chargeCheckBox.type = 'checkbox'
-  //     chargeCheckBox.id = id
-
-  //     const charge = document.createElement('label')
-  //     label.className = 'form-check-label col-md-12'
-  //     label.setAttribute('for', modalData.id)
-  //     label.textContent = modalData.mainText
-  //   })
-    
-  //   rightSide.appendChild(select)
-  // }
-
-  // container.appendChild(leftSide)
-  // container.appendChild(rightSide)
-  // document.getElementById(modalData.appendHere).appendChild(container)
 }
+
+// Set remaining data
+const setData = () => {
+  data.officerReporting = document.getElementById("officerReporting").value
+  data.ihsCase = document.getElementById("ihsCase").value
+  data.occurredFrom = document.getElementById("occurredFrom").value
+  data.occurredTo = document.getElementById("occurredTo").value
+  data.datetimeReported = document.getElementById("datetimeReported").value
+  data.location = document.getElementById("location").value
+  data.jurisdiction = document.getElementById("jurisdiction").value
+  data.probableCause = document.getElementById("probableCause").value
+}
+
+// Preview Pdf
+const previewPdf = async () => {
+  setData()
+
+  const pdfBytes = await createPdf(data)
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+
+  const embed = document.getElementById('pdfPreview')
+  embed.src = URL.createObjectURL(blob)
+}
+
+// Download Pdf
+const downloadPdf = async () => {
+  setData()
+
+  const pdfBytes = await createPdf(data)
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+
+  const link = document.createElement('a')
+  link.href = window.URL.createObjectURL(blob)
+  link.download = 'report.pdf'
+  link.click()
+  link.remove()
+}
+
+// Currently used for testing
+const autoFill = () => {
+  fetch('./autoFill.json').then((response) => response.json()).then((json) => {
+    // Main Page
+    mainPageIds.forEach(id => {
+      data[id] = json[id]
+      document.getElementById(id).value = json[id]
+    })
+
+    // People
+    json.people.forEach(person => {
+      peopleIds.forEach(id => {
+        document.getElementById(id).value = person[id]
+      })
+      addPeople()
+    })
+
+    // Update Suspect list before adding charges
+    updateSuspectList()
+
+    // Charges
+    json.charges.forEach(charge => {
+      chargesIds.forEach(id => {
+        document.getElementById(id).value = charge[id]
+      })
+      addCharges()
+    })
+    
+    // Officers
+    json.officers.forEach(officer => {
+      officersIds.forEach(id => {
+        document.getElementById(id).value = officer[id]
+      })
+      officer.resource.forEach(checkbox => {
+        document.getElementById(checkbox.toLowerCase()).checked = true
+      })
+      addOfficers()
+    })
+  })
+}
+
+autoFill()
