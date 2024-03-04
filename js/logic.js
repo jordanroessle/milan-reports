@@ -213,7 +213,8 @@ const setData = () => {
   data.occurredFrom = document.getElementById("occurredFrom").value
   data.occurredTo = document.getElementById("occurredTo").value
   data.datetimeReported = document.getElementById("datetimeReported").value
-  data.location = document.getElementById("location").value
+  data.locationLineOne = document.getElementById("locationLineOne").value
+  data.locationLineTwo = document.getElementById("locationLineTwo").value
   data.jurisdiction = document.getElementById("jurisdiction").value
   data.probableCause = document.getElementById("probableCause").value
 }
@@ -222,8 +223,8 @@ const setData = () => {
 const previewPdf = async () => {
   setData()
 
-  const pdfBytes = await createPdf(data)
-  const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+  const doc = await createPdf(data)
+  const blob = new Blob([doc.output('blob')], { type: 'application/pdf' })
 
   const embed = document.getElementById('pdfPreview')
   embed.src = URL.createObjectURL(blob)
@@ -233,14 +234,8 @@ const previewPdf = async () => {
 const downloadPdf = async () => {
   setData()
 
-  const pdfBytes = await createPdf(data)
-  const blob = new Blob([pdfBytes], { type: 'application/pdf' })
-
-  const link = document.createElement('a')
-  link.href = window.URL.createObjectURL(blob)
-  link.download = 'report.pdf'
-  link.click()
-  link.remove()
+  const pdf = await createPdf(data)
+  pdf.save(`${data.ihsCase}.pdf`)
 }
 
 // Currently used for testing

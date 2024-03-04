@@ -4,7 +4,8 @@ const mainPageIds = [
   'occurredFrom',
   'occurredTo',
   'datetimeReported',
-  'location',
+  'locationLineOne',
+  'locationLineTwo',
   'jurisdiction',
   'probableCause'
 ]

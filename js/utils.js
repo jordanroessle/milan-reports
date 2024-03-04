@@ -22,3 +22,8 @@ const updateTotalPeople = () => {
 const updateTotalOfficers = () => {
   document.getElementById('total-officers').textContent = `Other Officers: ${data.officers.length}`
 }
+
+// Clean Date
+const cleanDate = (date) => {
+  return date.replace('T', ' ').replaceAll('-', '/')
+}
