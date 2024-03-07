@@ -371,6 +371,8 @@
             </div>
         </div>
         <div class="footer">
+            <button type="button" class="btn btn-warning" onclick="buttonUpload()">Load File</button>
+            <input type="file" id="hiddenFile" style="display: none;" onchange="loadFile()">
             <button type="button" class="btn btn-success" onclick="previewPdf()">Preview</button>
             <button type="button" class="btn btn-primary" onclick="downloadPdf()">Download</button>
         </div>
@@ -391,6 +393,7 @@
     <script src="./js/constants.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/states.js"></script>
+    <script src="./js/loadFile.js"></script>
     <script src="./js/createFile.js"></script>
     <script src="./js/logic.js"></script>
 </body>
