@@ -11,37 +11,37 @@ const mainPageIds = [
 ]
 
 const peopleIds = [
-  "peopleType",
-  "ssn",
-  "firstName",
-  "middleName",
-  "lastName",
-  "addressLineOne",
-  "addressLineTwo",
-  "race",
-  "sex",
-  "dob",
-  "height",
-  "weight",
-  "hair",
-  "eye",
-  "phoneNumber",
-  "email",
-  "license",
-  "state",
-  "howIdentify"
+  'peopleType',
+  'ssn',
+  'firstName',
+  'middleName',
+  'lastName',
+  'addressLineOne',
+  'addressLineTwo',
+  'race',
+  'sex',
+  'dob',
+  'height',
+  'weight',
+  'hair',
+  'eye',
+  'phoneNumber',
+  'email',
+  'license',
+  'state',
+  'howIdentify'
 ]
 
 const chargesIds = [
-  "charge",
-  "law",
-  "severity",
-  "committedBy"
+  'charge',
+  'law',
+  'severity',
+  'committedBy'
 ]
 
 const officersIds = [
-  "officerName",
-  "officerId"
+  'officerName',
+  'officerId'
 ]
 
 const officerCheckboxes = [
