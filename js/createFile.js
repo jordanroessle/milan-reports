@@ -26,6 +26,11 @@ const chargeX = {
   chargeSeverityX: leftMargin + .75 * widthPage
 }
 
+// People Table
+const peopleX = {
+  
+}
+
 const createPdf = async (data) => {
   doc = new jsPDF()
   y = topMargin

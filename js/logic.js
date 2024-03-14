@@ -231,9 +231,15 @@ const previewPdf = async () => {
 }
 
 // Download Pdf
-const downloadPdf = async () => {
+const downloadFiles = async () => {
   setData()
 
   const pdf = await createPdf(data)
   pdf.save(`${data.ihsCase}.pdf`)
+
+  const a = document.createElement("a")
+  const file = new Blob([JSON.stringify(data)], {type: "application/json"})
+  a.href = URL.createObjectURL(file)
+  a.download = `${data.ihsCase}.json`
+  a.click()
 }
