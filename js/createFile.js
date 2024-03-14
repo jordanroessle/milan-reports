@@ -31,19 +31,45 @@ const peopleHeaderX = {
   peopleTypeX: leftMargin,
   peopleName: leftMargin + .1 * widthPage,
   peopleDesc1: leftMargin + .4 * widthPage,
-  peopleDesc1Ans: leftMargin + .45 * widthPage,
-  peopleDesc2: leftMargin + .52 * widthPage,
-  peopleDesc2Ans: leftMargin + .56 * widthPage,
-  peopleDesc3: leftMargin + .6 * widthPage,
-  peopleDesc3Ans: leftMargin + .65 * widthPage,
+  peopleDesc1Ans: leftMargin + .46 * widthPage,
+  peopleDesc2: leftMargin + .53 * widthPage,
+  peopleDesc2Ans: leftMargin + .57 * widthPage,
+  peopleDesc3: leftMargin + .63 * widthPage,
+  peopleDesc3Ans: leftMargin + .69 * widthPage,
   peopleDesc4: leftMargin + .8 * widthPage,
   peopleDesc4Ans: leftMargin + .85 * widthPage
 }
 
+const peopleContactInfoX = {
+  peopleFirstX: leftMargin + .4 * widthPage,
+  peopleSecondX: leftMargin + .46 * widthPage,
+  peopleThirdX: leftMargin + .60 * widthPage,
+  peopleFourthX: leftMargin + .66 * widthPage
+}
+
+const peopleIdentifyX = {
+  peopleFirstX: leftMargin + .4 * widthPage,
+  peopleSecondX: leftMargin + .48 * widthPage,
+  peopleThirdX: leftMargin + .60 * widthPage,
+  peopleFourthX: leftMargin + .65 * widthPage,
+  peopleFifthX:  leftMargin + .73 * widthPage,
+  peopleSixth: leftMargin + .84 * widthPage,
+}
+
+const peopleChargesX = {
+  peopleChargesFirstX: leftMargin,
+  peopleChargesSecondX: leftMargin + .4 * widthPage,
+  peopleChargesThirdX: leftMargin + .65 * widthPage,
+  peopleChargesFourthX: leftMargin + .75 * widthPage
+}
+
+const defaultFontSize = 10
+const titleFontSize = 20
+const subTitleFontSize = 16
+const sectionHeaderFontSize = 12
+
 const fontNormal = ['times', 'normal']
-
 const fontBold = ['times', 'bold']
-
 const fontItalizedBold = ['times', 'bolditalic']
 
 const createPdf = async (data) => {
@@ -58,15 +84,15 @@ const createPdf = async (data) => {
 
   // Header
   doc.setFont(...fontBold)
-  doc.setFontSize(20)
+  doc.setFontSize(titleFontSize)
   addText(headerText, alignCenter(headerText))
 
   // Sub Header
-  doc.setFontSize(16)
+  doc.setFontSize(subTitleFontSize)
   addText(subHeaderText, alignCenter(subHeaderText))
 
   doc.setFont(...fontNormal)
-  doc.setFontSize(12)
+  doc.setFontSize(sectionHeaderFontSize)
 
   // Officer Reporting
   addHeaderRectangle(officerReportingText, officerReportingText)
@@ -116,9 +142,23 @@ const createPdf = async (data) => {
   // People Involved
   addSectionHeader('People Involved')
   const people = data.people[0]
-  addRow('people', [
-    people.peopleType,
+
+  doc.setFontSize(sectionHeaderFontSize)
+  addRow('charge', [
+    people.peopleType + ':',
     `${people.lastName}, ${people.firstName}${people.middleName ? ' ' + people.middleName : ''}`,
+    '',
+    ''
+  ],
+    [fontItalizedBold, fontBold, fontNormal, fontNormal]
+  )
+
+  doc.setFontSize(defaultFontSize)
+  y += 4
+
+  addRow('people', [
+    'Address: ',
+    people.addressLineOne,
     'Race:',
     people.race,
     'Sex: ',
@@ -128,7 +168,59 @@ const createPdf = async (data) => {
     'Age: ',
     calculateAge(people.dob)
   ],
-    Array(10).fill(fontBold)
+    [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+  )
+  addRow('people', [
+    '',
+    people.addressLineTwo,
+    'H: ',
+    people.height,
+    'W: ',
+    people.weight,
+    'Hair: ',
+    people.hair,
+    'Eye: ',
+    people.eye
+  ], 
+    [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+  )
+
+  y += 4
+  addRow('peopleContact', [
+    'Phone: ',
+    people.phoneNumber,
+    'Email: ',
+    people.email
+  ],
+    [fontNormal, fontBold, fontNormal, fontBold]
+  )
+  addRow('peopleIdentify', [
+    'License: ',
+    people.license,
+    'State: ',
+    people.state,
+    'How Identify: ',
+    people.howIdentify
+  ],
+    [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+  )
+
+  y += 4
+  addRow('peopleCharges', [
+    'Offense/Charge',
+    'Law Section',
+    'Counts',
+    'Severity'
+  ],
+    Array(4).fill(fontNormal)
+  )
+  addRow('peopleCharges', [
+    data.charges[0].charge,
+    data.charges[0].law,
+    '1',
+    data.charges[0].severity
+  ], 
+    Array(4).fill(fontBold)
   )
 
   return doc
@@ -183,11 +275,11 @@ const addSectionHeader = (text) => {
   const splitX = leftMargin + 0.3 * rectWidth
   doc.line(splitX, y, splitX, y + rectHeight)
 
-  doc.setFontSize(12)
-  doc.setFont('times', 'bolditalic')
+  doc.setFontSize(sectionHeaderFontSize)
+  doc.setFont(...fontItalizedBold)
   doc.text(text, leftMargin + 2, y + rectHeight / 2, { align: 'left', baseline: 'middle' })
-  doc.setFontSize(10)
-  doc.setFont('times', 'normal')
+  doc.setFontSize(defaultFontSize)
+  doc.setFont(...fontNormal)
   y += 10
 }
 
@@ -204,6 +296,15 @@ const addRow = (rowType, texts, fonts) => {
     case 'people':
       divider = peopleHeaderX
       break
+    case 'peopleContact':
+      divider = peopleContactInfoX
+      break
+    case 'peopleIdentify':
+      divider = peopleIdentifyX
+      break
+    case 'peopleCharges':
+      divider = peopleChargesX
+      break
     default:
       console.error(`${rowType} is not a valid way to call addRow`)
       return
@@ -219,7 +320,7 @@ const addRow = (rowType, texts, fonts) => {
     doc.setFont(...fonts[i])
     doc.text(texts[i], divider[dividers[i]], y)
   }
-  doc.setFont('times', 'normal')
+  doc.setFont(...fontNormal)
   y += 4
 }
 
