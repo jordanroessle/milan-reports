@@ -27,9 +27,24 @@ const chargeX = {
 }
 
 // People Table
-const peopleX = {
-  
+const peopleHeaderX = {
+  peopleTypeX: leftMargin,
+  peopleName: leftMargin + .1 * widthPage,
+  peopleDesc1: leftMargin + .4 * widthPage,
+  peopleDesc1Ans: leftMargin + .45 * widthPage,
+  peopleDesc2: leftMargin + .52 * widthPage,
+  peopleDesc2Ans: leftMargin + .56 * widthPage,
+  peopleDesc3: leftMargin + .6 * widthPage,
+  peopleDesc3Ans: leftMargin + .65 * widthPage,
+  peopleDesc4: leftMargin + .8 * widthPage,
+  peopleDesc4Ans: leftMargin + .85 * widthPage
 }
+
+const fontNormal = ['times', 'normal']
+
+const fontBold = ['times', 'bold']
+
+const fontItalizedBold = ['times', 'bolditalic']
 
 const createPdf = async (data) => {
   doc = new jsPDF()
@@ -42,7 +57,7 @@ const createPdf = async (data) => {
   const ihsCaseText = `IHS Case #: ${data.ihsCase}`
 
   // Header
-  doc.setFont('times', 'bold')
+  doc.setFont(...fontBold)
   doc.setFontSize(20)
   addText(headerText, alignCenter(headerText))
 
@@ -50,7 +65,7 @@ const createPdf = async (data) => {
   doc.setFontSize(16)
   addText(subHeaderText, alignCenter(subHeaderText))
 
-  doc.setFont('times', 'normal')
+  doc.setFont(...fontNormal)
   doc.setFontSize(12)
 
   // Officer Reporting
@@ -62,22 +77,36 @@ const createPdf = async (data) => {
 
   // Incident
   addSectionHeader('Incident')
-  addRow('incident', ['Date & Time Occured', 'Date & Time Reported', 'Location of Occurence', 'Jurisdiction'])
-  doc.setFont('times', 'bold')
+  addRow('incident',
+    ['Date & Time Occured', 'Date & Time Reported', 'Location of Occurence', 'Jurisdiction'],
+    Array(4).fill(fontNormal)
+  )
+
   addRow('incident', [
     `${cleanDate(data.occurredFrom)} to`,
     cleanDate(data.datetimeReported),
     data.locationLineOne,
     data.jurisdiction
-  ])
-  addRow('incident', [cleanDate(data.occurredTo), '', data.locationLineTwo, ''])
+  ],
+    Array(4).fill(fontBold)
+  )
+  addRow('incident', 
+    [cleanDate(data.occurredTo), '', data.locationLineTwo, ''],
+    Array(4).fill(fontBold)
+  )
 
   // Charges
   addSectionHeader('Charges')
-  addRow('charge', ['Chg#', 'Offense/Charge', 'Law Section', 'Severity'])
-  doc.setFont('times', 'bold')
+  addRow('charge',
+    ['Chg#', 'Offense/Charge', 'Law Section', 'Severity'],
+    Array(4).fill(fontNormal)
+  )
+
   data.charges.forEach((charge, i) => {
-    addRow('charge', [(i + 1).toString(), charge.charge, charge.law, charge.severity])
+    addRow('charge',
+      [(i + 1).toString(), charge.charge, charge.law, charge.severity],
+      Array(4).fill(fontBold)
+    )
   })
 
   // Probable Cause
@@ -86,6 +115,21 @@ const createPdf = async (data) => {
 
   // People Involved
   addSectionHeader('People Involved')
+  const people = data.people[0]
+  addRow('people', [
+    people.peopleType,
+    `${people.lastName}, ${people.firstName}${people.middleName ? ' ' + people.middleName : ''}`,
+    'Race:',
+    people.race,
+    'Sex: ',
+    people.sex,
+    'DOB: ',
+    people.dob,
+    'Age: ',
+    calculateAge(people.dob)
+  ],
+    Array(10).fill(fontBold)
+  )
 
   return doc
 }
@@ -148,9 +192,8 @@ const addSectionHeader = (text) => {
 }
 
 // Add Row
-const addRow = (rowType, texts) => {
+const addRow = (rowType, texts, fonts) => {
   let divider
-
   switch (rowType) {
     case 'incident':
       divider = incidentX
@@ -158,20 +201,25 @@ const addRow = (rowType, texts) => {
     case 'charge':
       divider = chargeX
       break
+    case 'people':
+      divider = peopleHeaderX
+      break
     default:
-      console.error(`${rowType} is not a valid way to call addMe`)
+      console.error(`${rowType} is not a valid way to call addRow`)
       return
   }
 
   const dividers = Object.keys(divider)
-  if (dividers.length !== texts.length) {
+  if (dividers.length !== texts.length || dividers.length !== fonts.length) {
     console.error('Something went wrong...')
     return
   }
 
   for(let i = 0; i < dividers.length; i++) {
+    doc.setFont(...fonts[i])
     doc.text(texts[i], divider[dividers[i]], y)
   }
+  doc.setFont('times', 'normal')
   y += 4
 }
 

@@ -27,3 +27,21 @@ const updateTotalOfficers = () => {
 const cleanDate = (date) => {
   return date.replace('T', ' ').replaceAll('-', '/')
 }
+
+// Calculate Age
+const calculateAge = (dob) => {
+  const now = new Date()
+  const dobSplit = dob.split('-')
+  let age
+
+  if (now.getMonth() + 1 > dobSplit[1]) {
+    age = now.getFullYear() - dobSplit[0]
+  } 
+  else if (now.getMonth() + 1 == dobSplit[1]) {
+    age = now.getDate() >= dobSplit[2] ? now.getFullYear() - dobSplit[0] : now.getFullYear() - dobSplit[0] - 1
+  }
+  else {
+    age = now.getFullYear() - dobSplit[0] - 1
+  }
+  return age.toString()
+}
