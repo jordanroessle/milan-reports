@@ -36,7 +36,8 @@ const chargesIds = [
   'charge',
   'law',
   'severity',
-  'committedBy'
+  'committedBy',
+  'chargeCount'
 ]
 
 const officersIds = [

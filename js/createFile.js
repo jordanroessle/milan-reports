@@ -10,6 +10,9 @@ const topMargin = 20
 // Width of writable area
 const widthPage = doc.internal.pageSize.width - leftMargin - rightMargin
 
+// Height addPage cutoff
+const heightCutoff = 250
+
 // Incident Table
 const incidentX = {
   incidentOccuredX: leftMargin,
@@ -22,8 +25,8 @@ const incidentX = {
 const chargeX = {
   chargeCountX: leftMargin,
   chargeDescX: leftMargin + .1 * widthPage,
-  chargeLawSectionX: leftMargin + .5 * widthPage,
-  chargeSeverityX: leftMargin + .75 * widthPage
+  chargeLawSectionX: leftMargin + .6 * widthPage,
+  chargeSeverityX: leftMargin + .8 * widthPage
 }
 
 // People Table
@@ -58,16 +61,23 @@ const peopleIdentifyX = {
 
 const peopleChargesX = {
   peopleChargesFirstX: leftMargin,
-  peopleChargesSecondX: leftMargin + .4 * widthPage,
+  peopleChargesSecondX: leftMargin + .5 * widthPage,
   peopleChargesThirdX: leftMargin + .65 * widthPage,
   peopleChargesFourthX: leftMargin + .75 * widthPage
 }
 
+const officersX = {
+  first: leftMargin,
+  checkboxes: leftMargin + .3 * widthPage
+}
+
+// Font Sizes
 const defaultFontSize = 10
 const titleFontSize = 20
 const subTitleFontSize = 16
 const sectionHeaderFontSize = 12
 
+// Font Styles
 const fontNormal = ['times', 'normal']
 const fontBold = ['times', 'bold']
 const fontItalizedBold = ['times', 'bolditalic']
@@ -76,30 +86,15 @@ const createPdf = async (data) => {
   doc = new jsPDF()
   y = topMargin
 
-  // Set Texts
-  const headerText = 'Idaho Humane Society - Animal Control'
-  const subHeaderText = 'General Report'
-  const officerReportingText = `Officer Reporting: ${data.officerReporting}`
-  const ihsCaseText = `IHS Case #: ${data.ihsCase}`
+  // Set Header Texts
+  const headerTexts = {
+   headerText: 'Idaho Humane Society - Animal Control',
+   subHeaderText: 'General Report',
+   officerReportingText: `Officer Reporting: ${data.officerReporting}`,
+   ihsCaseText: `IHS Case #: ${data.ihsCase}`,
+  }
 
-  // Header
-  doc.setFont(...fontBold)
-  doc.setFontSize(titleFontSize)
-  addText(headerText, alignCenter(headerText))
-
-  // Sub Header
-  doc.setFontSize(subTitleFontSize)
-  addText(subHeaderText, alignCenter(subHeaderText))
-
-  doc.setFont(...fontNormal)
-  doc.setFontSize(sectionHeaderFontSize)
-
-  // Officer Reporting
-  addHeaderRectangle(officerReportingText, officerReportingText)
-
-  // IHS Case Number
-  addHeaderRectangle(officerReportingText, ihsCaseText)
-  y += 1
+  addHeader(headerTexts)
 
   // Incident
   addSectionHeader('Incident')
@@ -141,87 +136,119 @@ const createPdf = async (data) => {
 
   // People Involved
   addSectionHeader('People Involved')
-  const people = data.people[0]
+  data.people.forEach((people, index) => {
+    needNewPage(headerTexts, 'People Involved')
+    doc.setFontSize(sectionHeaderFontSize)
+    addRow('incident', [
+      `${people.peopleType}: ${people.lastName}, ${people.firstName}${people.middleName ? ' ' + people.middleName : ''}`,
+      '',
+      '',
+      ''
+    ],
+      [fontItalizedBold, fontBold, fontNormal, fontNormal]
+    )
 
-  doc.setFontSize(sectionHeaderFontSize)
-  addRow('charge', [
-    people.peopleType + ':',
-    `${people.lastName}, ${people.firstName}${people.middleName ? ' ' + people.middleName : ''}`,
-    '',
-    ''
-  ],
-    [fontItalizedBold, fontBold, fontNormal, fontNormal]
-  )
+    doc.setFontSize(defaultFontSize)
+    y += 4
 
-  doc.setFontSize(defaultFontSize)
-  y += 4
+    addRow('people', [
+      'Address: ',
+      people.addressLineOne,
+      'Race:',
+      people.race,
+      'Sex: ',
+      people.sex,
+      'DOB: ',
+      people.dob,
+      'Age: ',
+      calculateAge(people.dob)
+    ],
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
+    addRow('people', [
+      '',
+      people.addressLineTwo,
+      'H: ',
+      people.height,
+      'W: ',
+      people.weight,
+      'Hair: ',
+      people.hair,
+      'Eye: ',
+      people.eye
+    ], 
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
 
-  addRow('people', [
-    'Address: ',
-    people.addressLineOne,
-    'Race:',
-    people.race,
-    'Sex: ',
-    people.sex,
-    'DOB: ',
-    people.dob,
-    'Age: ',
-    calculateAge(people.dob)
-  ],
-    [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
-  )
-  addRow('people', [
-    '',
-    people.addressLineTwo,
-    'H: ',
-    people.height,
-    'W: ',
-    people.weight,
-    'Hair: ',
-    people.hair,
-    'Eye: ',
-    people.eye
-  ], 
-    [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
-  )
+    y += 4
+    addRow('peopleContact', [
+      'Phone: ',
+      people.phoneNumber,
+      'Email: ',
+      people.email
+    ],
+      [fontNormal, fontBold, fontNormal, fontBold]
+    )
+    addRow('peopleIdentify', [
+      'License: ',
+      people.license,
+      'State: ',
+      people.state,
+      'How Identify: ',
+      people.howIdentify
+    ],
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
 
-  y += 4
-  addRow('peopleContact', [
-    'Phone: ',
-    people.phoneNumber,
-    'Email: ',
-    people.email
-  ],
-    [fontNormal, fontBold, fontNormal, fontBold]
-  )
-  addRow('peopleIdentify', [
-    'License: ',
-    people.license,
-    'State: ',
-    people.state,
-    'How Identify: ',
-    people.howIdentify
-  ],
-    [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
-  )
+    y += 4
+    // Find charges by people
+    const allCharges = data.charges 
+    let filteredCharges = allCharges.filter(charge =>
+      charge.committedBy.split(' ')[0] === people.firstName 
+      && charge.committedBy.split(' ')[1] === people.lastName
+    )
 
-  y += 4
-  addRow('peopleCharges', [
-    'Offense/Charge',
-    'Law Section',
-    'Counts',
-    'Severity'
-  ],
-    Array(4).fill(fontNormal)
-  )
-  addRow('peopleCharges', [
-    data.charges[0].charge,
-    data.charges[0].law,
-    '1',
-    data.charges[0].severity
-  ], 
-    Array(4).fill(fontBold)
-  )
+    if (filteredCharges.length > 0) {
+      addRow('peopleCharges', [
+        'Offense/Charge',
+        'Law Section',
+        'Counts',
+        'Severity'
+      ],
+        Array(4).fill(fontNormal)
+      )
+    }
+
+    filteredCharges.forEach(charge => {
+      addRow('peopleCharges', [
+        charge.charge,
+        charge.law,
+        charge.chargeCount,
+        charge.severity
+      ], 
+        Array(4).fill(fontBold)
+      )
+    })
+    if (index !== data.people.length - 1) {
+      doc.line(leftMargin, y, leftMargin + widthPage, y)
+    }
+    y += 5
+  })
+
+  needNewPage(headerTexts)
+  // Officers Involved
+  addSectionHeader('Other Officers Involved')
+  y += 2
+  doc.setFont(...fontBold)
+  data.officers.forEach(officer => {
+    // Officer row
+    doc.text(`Ofc. ${officer.officerName} (${officer.officerId})`, leftMargin, y)
+    addOfficerCheckbox(leftMargin + .4 * widthPage, officer.resource.includes('Audio'), 'Audio')
+    addOfficerCheckbox(leftMargin + .5 * widthPage, officer.resource.includes('Video'), 'Video')
+    addOfficerCheckbox(leftMargin + .6 * widthPage, officer.resource.includes('Supp'), 'Suppl.')
+    addOfficerCheckbox(leftMargin + .7 * widthPage, officer.resource.includes('Pics'), 'Pics')
+    y += 4
+  })
 
   return doc
 }
@@ -254,7 +281,7 @@ const addText = (text, x) => {
   y += doc.getTextDimensions(text).h
 }
 
-// Add rectangle
+// Add Header rectangle
 const addHeaderRectangle = (sizing, text) => {
   const rectWidth = rectW(doc.getTextDimensions(sizing).w)
   const rectHeight = rectH(doc.getTextDimensions(sizing).h)
@@ -262,6 +289,41 @@ const addHeaderRectangle = (sizing, text) => {
   doc.rect(doc.internal.pageSize.width - rightMargin - rectWidth, y, rectWidth, rectHeight)
   doc.text(text, alignRight(sizing + ' '), y + rectHeight / 2, { align: 'left', baseline: 'middle' })
   y += 6
+}
+
+// Create Header
+const addHeader = (headerTexts) => {
+    // Header
+    doc.setFont(...fontBold)
+    doc.setFontSize(titleFontSize)
+    addText(headerTexts.headerText, alignCenter(headerTexts.headerText))
+  
+    // Sub Header
+    doc.setFontSize(subTitleFontSize)
+    addText(headerTexts.subHeaderText, alignCenter(headerTexts.subHeaderText))
+  
+    doc.setFont(...fontNormal)
+    doc.setFontSize(sectionHeaderFontSize)
+  
+    // Officer Reporting
+    addHeaderRectangle(headerTexts.officerReportingText, headerTexts.officerReportingText)
+  
+    // IHS Case Number
+    addHeaderRectangle(headerTexts.officerReportingText, headerTexts.ihsCaseText)
+    y += 1
+}
+
+const addOfficerCheckbox = (xPlacement, isChecked, text) => {
+  doc.setFontSize(defaultFontSize)
+  const textHeight = doc.getTextDimensions('nom').h
+  doc.rect(xPlacement, y - textHeight, textHeight, textHeight)
+  if (isChecked) {
+    const split = xPlacement + .3 * textHeight
+    const padding = .5
+    doc.line(xPlacement + padding, y - .5 * textHeight, split, y - padding)
+    doc.line(split, y - padding , xPlacement + textHeight - padding, y - textHeight + padding)
+  }
+  doc.text(text, xPlacement + 1.5 * textHeight, y - 1)
 }
 
 // Create Section Headers
@@ -345,4 +407,17 @@ const wrapText = (text) => {
   }
   doc.text(line, leftMargin, yPosition)
   y = yPosition + 4
+}
+
+// Check if need new page, if yes add page and reset y
+const needNewPage = (headerTexts, sectionHeader) => {
+  if (y < heightCutoff ) {
+    return
+  }
+
+  // Add new page and re-add header
+  doc.addPage()
+  y = topMargin
+  addHeader(headerTexts)
+  sectionHeader ? addSectionHeader(sectionHeader) : ''
 }

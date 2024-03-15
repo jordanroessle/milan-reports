@@ -11,6 +11,16 @@
   height: 800px;
 }
 
+.header {
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+
+.footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 @media (min-width: 768px) {
   .modal-xl {
     width: 90%;

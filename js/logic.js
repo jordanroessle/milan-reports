@@ -61,6 +61,7 @@ const addCharges = () => {
     law: document.getElementById('law').value,
     severity: document.getElementById('severity').value,
     committedBy: document.getElementById('committedBy').value,
+    chargeCount: document.getElementById('chargeCount').value,
     id: self.crypto.randomUUID()
   }
 
@@ -79,6 +80,7 @@ const addCharges = () => {
   // Clear input fields after grabbing data
   document.getElementById('charge').value = ''
   document.getElementById('law').value = ''
+  document.getElementById('chargeCount').value = 1
 
   // Add Preview
   modalAddPreview(modalData)
@@ -228,6 +230,7 @@ const previewPdf = async () => {
 
   const embed = document.getElementById('pdfPreview')
   embed.src = URL.createObjectURL(blob)
+  embed.style = 'display: initial;'
 }
 
 // Download Pdf
