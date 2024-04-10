@@ -212,6 +212,8 @@ const updateSuspectList = () => {
 const setData = () => {
   data.officerReporting = document.getElementById("officerReporting").value
   data.ihsCase = document.getElementById("ihsCase").value
+  data.omnigoNumber = document.getElementById("omnigoNumber").value
+  data.drNumber = document.getElementById("drNumber").value
   data.occurredFrom = document.getElementById("occurredFrom").value
   data.occurredTo = document.getElementById("occurredTo").value
   data.datetimeReported = document.getElementById("datetimeReported").value

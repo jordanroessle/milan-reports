@@ -36,6 +36,18 @@
                         <input type="text" class="form-control" id="ihsCase">
                     </div>
                 </div>
+                <div class="row">
+                  <!-- Omnigo Number -->
+                  <div class="form-group col-md-6">
+                      <label for="omnigoNumber">Omnigo #</label>
+                      <input type="text" class="form-control" id="omnigoNumber">
+                  </div>
+                  <!-- DR Number -->
+                  <div class="form-group col-md-6">
+                      <label for="drNumber">DR #</label>
+                      <input type="text" class="form-control" id="drNumber">
+                  </div>
+              </div>
                 
                 <h2>Incident</h2>
                 <!-- Date Occured -->
@@ -308,12 +320,79 @@
                     </div>
                 </div>
                 
-                <!-- Header for Other Officers Involved -->
+                <!-- Header for Animals Involved -->
                 <div class="row">
                     <div class="col">
-                        <p id="total-officers">Other Officers: 0</p>
+                        <p id="total-animals">Animals Involved: 0</p>
                     </div>
                     <div class="col">
+                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#animalsModal">Edit Animals Involved</button>
+                    </div>
+                </div>
+
+                <!-- Modal For Animals -->
+                <div class="modal fade" id="animalsModal" tabindex="-1" role="dialog" aria-labelledby="animalsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="animalsModalLabel">Animals Involved</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- Inputs to add animals -->
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="form-group col-md-8">
+                                                <label for="officerName">Officer's Name</label>
+                                                <input type="text" class="form-control" id="officerName">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="officerId">Officer's #</label>
+                                                <input type="text" class="form-control" id="officerId">
+                                            </div>
+                                        </div>
+                                        <!-- Officer Check Boxes -->
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="audio">
+                                            <label class="form-check-label" for="audio">Audio</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="video">
+                                            <label class="form-check-label" for="video">Video</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="supp">
+                                            <label class="form-check-label" for="supp">Suppl.</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="pics">
+                                            <label class="form-check-label" for="pics">Pics</label>
+                                        </div>
+                                    </div>
+                                    <!-- Show Animals -->
+                                    <div class="col" id="show-animals">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" onclick="addAnimals()">Add</button>
+                                <button type="button" class="btn btn-danger" onclick="modalDelete('animals')">Delete</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Header for Other Officers Involved -->
+                <div class="row">
+                  <div class="col">
+                      <p id="total-officers">Other Officers: 0</p>
+                  </div>
+                  <div class="col">
                         <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#officersModal">Edit Officers Involved</button>
                     </div>
                 </div>
@@ -405,7 +484,8 @@
     <script src="./js/utils.js"></script>
     <script src="./js/states.js"></script>
     <script src="./js/loadFile.js"></script>
-    <script src="./js/createFile.js"></script>
-    <script src="./js/logic.js"></script>
+    <script src="./js/pdfHelperFunctions.js"></script>
+    <script src="./js/createGeneralReport.js"></script>
+    <script src="./js/generalReportLogic.js"></script>
 </body>
 </html>
