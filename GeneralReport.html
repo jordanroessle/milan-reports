@@ -160,24 +160,24 @@
                                           </div>
                                         </div>
                                         <div class="row">
-                                            <!-- Race -->
-                                            <div class="form-group col-md-3">
-                                                <label for="race">Race</label>
-                                                <input type="text" class="form-control" id="race">
-                                            </div>
-                                            <!-- Sex -->
-                                            <div class="form-group col-md-3">
-                                                <label for="sex">Sex</label>
-                                                <select id="sex" class="form-control">
-                                                    <option selected>M</option>
-                                                    <option>F</option>
-                                                </select>
-                                            </div>
-                                            <!-- Date of Birth -->
-                                            <div class="form-group col-md-6">
-                                                <label for="dob">DOB</label>
-                                                <input type="date" class="form-control" id="dob">
-                                            </div>
+                                          <!-- Race -->
+                                          <div class="form-group col-md-3">
+                                              <label for="race">Race</label>
+                                              <input type="text" class="form-control" id="race">
+                                          </div>
+                                          <!-- Sex -->
+                                          <div class="form-group col-md-3">
+                                              <label for="sex">Sex</label>
+                                              <select id="sex" class="form-control">
+                                                  <option selected>M</option>
+                                                  <option>F</option>
+                                              </select>
+                                          </div>
+                                          <!-- Date of Birth -->
+                                          <div class="form-group col-md-6">
+                                              <label for="dob">DOB</label>
+                                              <input type="date" class="form-control" id="dob">
+                                          </div>
                                         </div>
                                         <div class="row">
                                             <!-- Height -->
@@ -326,7 +326,7 @@
                         <p id="total-animals">Animals Involved: 0</p>
                     </div>
                     <div class="col">
-                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#animalsModal">Edit Animals Involved</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="updateOwnerList()" data-toggle="modal" data-target="#animalsModal">Edit Animals Involved</button>
                     </div>
                 </div>
 
@@ -345,31 +345,81 @@
                                     <!-- Inputs to add animals -->
                                     <div class="col">
                                         <div class="row">
-                                            <div class="form-group col-md-8">
-                                                <label for="officerName">Officer's Name</label>
-                                                <input type="text" class="form-control" id="officerName">
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="officerId">Officer's #</label>
-                                                <input type="text" class="form-control" id="officerId">
-                                            </div>
+                                          <!-- Type -->
+                                          <div class="form-group col-md-4">
+                                            <label for="animalType">Type</label>
+                                            <select id="animalType" class="form-control">
+                                                <option selected>Suspect</option>
+                                                <option>Victim</option>
+                                            </select>
+                                          </div>
+                                          <div class="form-group col-md-8">
+                                              <label for="animalName">Name</label>
+                                              <input type="text" class="form-control" id="animalName">
+                                          </div>
                                         </div>
-                                        <!-- Officer Check Boxes -->
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="audio">
-                                            <label class="form-check-label" for="audio">Audio</label>
+                                        <div class="row">
+                                          <div class="form-group col-md-4">
+                                            <label for="animalId">Animal ID</label>
+                                            <input type="text" class="form-control" id="animalId">
+                                          </div>
+                                          <div class="form-group col-md-4">
+                                            <label for="animalGender">Sex</label>
+                                            <select id="animalGender" class="form-control">
+                                              <option selected>Male</option>
+                                              <option>Female</option>
+                                            </select>
+                                          </div>
+                                          <div class="form-group col-md-4">
+                                            <label for="animalBite">Bite History</label>
+                                            <select id="animalBite" class="form-control">
+                                              <option selected>Yes</option>
+                                              <option>No</option>
+                                            </select>
+                                          </div>
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="video">
-                                            <label class="form-check-label" for="video">Video</label>
+                                        <div class="row">
+                                          <!-- Species -->
+                                          <div class="form-group col-md-3">
+                                            <label for="animalSpecies">Species</label>
+                                            <input type="text" class="form-control" id="animalSpecies">
+                                          </div>
+                                          <!-- Breed -->
+                                          <div class="form-group col-md-3">
+                                            <label for="animalBreed">Breed</label>
+                                            <input type="text" class="form-control" id="animalBreed">
+                                          </div>
+                                          <!-- Date of Birth -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalDob">DOB</label>
+                                            <input type="date" class="form-control" id="animalDob">
+                                          </div>
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="supp">
-                                            <label class="form-check-label" for="supp">Suppl.</label>
+                                        <div class="row">
+                                          <!-- Color -->
+                                          <div class="form-group col-md-4">
+                                            <label for="animalColor">Color</label>
+                                            <input type="text" class="form-control" id="animalColor">
+                                          </div>
+                                          <!-- Chip -->
+                                          <div class="form-group col-md-4">
+                                            <label for="animalChip">Chip #</label>
+                                            <input type="text" class="form-control" id="animalChip">
+                                          </div>
+                                          <!-- Altered -->
+                                          <div class="form-group col-md-4">
+                                            <label for="animalAltered">Altered</label>
+                                            <select id="animalAltered" class="form-control">
+                                              <option selected>Yes</option>
+                                              <option>No</option>
+                                            </select>
+                                          </div> 
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="pics">
-                                            <label class="form-check-label" for="pics">Pics</label>
+                                        <div class="row">
+                                          <div class="form-group col-md-12">
+                                            <label for="animalOwner">Ownership/Gaurdianship</label>
+                                            <select id="animalOwner" class="form-control"></select>
+                                          </div>
                                         </div>
                                     </div>
                                     <!-- Show Animals -->

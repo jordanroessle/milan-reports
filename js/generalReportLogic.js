@@ -1,6 +1,7 @@
 const data = {
   charges: [],
   people: [],
+  animals: [],
   officers: []
 }
 
@@ -35,7 +36,7 @@ const addPeople = () => {
   updateTotalPeople()
 
   // Modal Data
-  modalData = {
+  const modalData = {
     id: person.id,
     appendHere: 'show-people',
     mainText: `${person.peopleType}: ${person.firstName} ${person.lastName}`,
@@ -70,7 +71,7 @@ const addCharges = () => {
   updateTotalCharges()
 
   // Modal Data
-  modalData = {
+  const modalData = {
     id: charge.id,
     appendHere: 'show-charge',
     mainText: `${charge.severity} by ${charge.committedBy}`,
@@ -84,6 +85,47 @@ const addCharges = () => {
 
   // Add Preview
   modalAddPreview(modalData)
+}
+
+// Add Animal
+const addAnimals = () => {
+  // Grab data
+  const animal = {
+    animalType: document.getElementById('animalType').value,
+    animalName: document.getElementById('animalName').value,
+    animalId: document.getElementById('animalId').value,
+    animalGender: document.getElementById('animalGender').value,
+    animalBite: document.getElementById('animalBite').value,
+    animalSpecies: document.getElementById('animalSpecies').value,
+    animalBreed: document.getElementById('animalBreed').value,
+    animalDob: document.getElementById('animalDob').value,
+    animalColor: document.getElementById('animalColor').value,
+    animalChip: document.getElementById('animalChip').value,
+    animalAltered: document.getElementById('animalAltered').value,
+    animalOwner: document.getElementById('animalOwner').value,
+    id: self.crypto.randomUUID()
+  }
+
+  // Update globals
+  data.animals.push(animal)
+  updateTotalaAnimals()
+
+  // Modal Data
+  const modalData = {
+    id: animal.id,
+    appendHere: 'show-animals',
+    mainText: `${animal.animalType}: ${animal.animalName} (${animal.animalSpecies})`,
+    children: [ createElement('label', { class: 'col-md-12', for: animal.id }, `Owner: ${animal.animalOwner}`) ]
+  }
+
+    // Clear input fields after grabbing data
+    Object.keys(animal).forEach(key => {
+      if (key !== 'id' && key !== 'animalType' && key !== 'animalGender' && key !== 'animalAltered' && key !== 'animalOwner')
+        document.getElementById(key).value = ''
+    })
+  
+    // Add Preview
+    modalAddPreview(modalData)
 }
 
 // Add Officer
@@ -113,7 +155,7 @@ const addOfficers = () => {
   updateTotalOfficers()
 
   // Modal Data
-  modalData = {
+  const modalData = {
     id: officer.id,
     appendHere: 'show-officers',
     mainText: `${officer.officerName} (${officer.officerId})`,
@@ -204,6 +246,17 @@ const updateSuspectList = () => {
   const suspects = data.people.filter(x => x.peopleType === 'Suspect')
   suspects.forEach(suspect => {
     const option = createElement('option', {}, `${suspect.firstName} ${suspect.lastName}`)
+    dropdown.appendChild(option)
+  })
+}
+
+// Update Owner List
+const updateOwnerList = () => {
+  const dropdown = document.getElementById('animalOwner')
+  dropdown.innerHTML = ''
+
+  data.people.forEach(person => {
+    const option = createElement('option', {}, `${person.firstName} ${person.lastName}`)
     dropdown.appendChild(option)
   })
 }

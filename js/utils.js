@@ -18,6 +18,11 @@ const updateTotalPeople = () => {
   document.getElementById('total-people').textContent = `People Involved: ${data.people.length}`
 }
 
+// Update Total Animals Counter
+const updateTotalaAnimals = () => {
+  document.getElementById('total-animals').textContent = `Animals Involved: ${data.animals.length}`
+}
+
 // Update Total Officers Counter
 const updateTotalOfficers = () => {
   document.getElementById('total-officers').textContent = `Other Officers: ${data.officers.length}`
