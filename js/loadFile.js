@@ -1,6 +1,10 @@
 // Load file
 const loadFile = () => {
   const file = document.getElementById('hiddenFile').files[0]
+  if (file.type !== 'application/json') {
+    console.error('Invalid File Type: Please only upload a json file downloaded by this page')
+    return
+  }
   const reader = new FileReader()
   reader.readAsText(file)
 

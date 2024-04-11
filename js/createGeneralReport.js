@@ -92,7 +92,6 @@ const officersX = {
 }
 
 const createPdf = async (data) => {
-  doc = new jsPDF()
   y = topMargin
 
   // Set Header Texts

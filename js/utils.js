@@ -28,6 +28,10 @@ const updateTotalOfficers = () => {
   document.getElementById('total-officers').textContent = `Other Officers: ${data.officers.length}`
 }
 
+const updateTotalPhotos = () => {
+  document.getElementById('total-photos').textContent = `Photos Added: ${document.getElementById('show-photos').children.length}`
+}
+
 // Clean Date
 const cleanDate = (date) => {
   return date.replace('T', ' ').replaceAll('-', '/')

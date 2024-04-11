@@ -2,7 +2,7 @@
   padding-left: 15px;
 }
 
-#total-charges, #total-people, #total-animals, #total-officers {
+#total-charges, #total-people, #total-animals, #total-officers, #total-photos {
   font-size: 20px;
 }
 
@@ -19,6 +19,26 @@
 .footer {
   padding-top: 20px;
   padding-bottom: 20px;
+}
+
+.hideMe {
+  display: none;
+}
+
+#photoAddConfirm {
+  margin-top: 5px;
+}
+
+#photoSuccessfullyAdded {
+  transform: scale(1.5);
+}
+
+#photoSuccessfullyAddedLabel {
+  padding-left: 5px;
+}
+
+#show-photos {
+  margin-left: 20px;
 }
 
 @media (min-width: 768px) {
