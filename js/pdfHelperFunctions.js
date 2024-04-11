@@ -66,6 +66,12 @@ const addHeader = (headerTexts) => {
   
     // IHS Case Number
     addHeaderRectangle(headerTexts.officerReportingText, headerTexts.ihsCaseText)
+
+    // Omnigo #
+    addHeaderRectangle(headerTexts.officerReportingText, headerTexts.omnigoNumber)
+
+    // DR #
+    addHeaderRectangle(headerTexts.officerReportingText, headerTexts.drNumber)
     y += 1
 }
 

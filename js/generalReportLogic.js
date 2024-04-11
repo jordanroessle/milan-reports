@@ -120,7 +120,12 @@ const addAnimals = () => {
 
     // Clear input fields after grabbing data
     Object.keys(animal).forEach(key => {
-      if (key !== 'id' && key !== 'animalType' && key !== 'animalGender' && key !== 'animalAltered' && key !== 'animalOwner')
+      if (key !== 'id' &&
+          key !== 'animalType' &&
+          key !== 'animalGender' &&
+          key !== 'animalAltered' &&
+          key !== 'animalOwner' &&
+          key !== 'animalBite')
         document.getElementById(key).value = ''
     })
   
@@ -204,6 +209,9 @@ const modalDelete = (modalType) => {
     case 'charges':
       id = 'show-charge'
       break
+    case 'animals':
+      id = 'show-animals'
+      break
     case 'people':
       id = 'show-people'
       break
@@ -212,6 +220,7 @@ const modalDelete = (modalType) => {
       break
     default:
       console.error('Invalid call of modalDelete')
+      return
   }
 
   const container = document.getElementById(id)
@@ -236,6 +245,7 @@ const modalDelete = (modalType) => {
   updateTotalCharges()
   updateTotalPeople()
   updateTotalOfficers()
+  updateTotalaAnimals()
 }
 
 // Update Suspect list in charges modal

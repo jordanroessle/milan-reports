@@ -1,6 +1,8 @@
 const mainPageIds = [
   'officerReporting',
   'ihsCase',
+  'omnigoNumber',
+  'drNumber',
   'occurredFrom',
   'occurredTo',
   'datetimeReported',
@@ -38,6 +40,21 @@ const chargesIds = [
   'severity',
   'committedBy',
   'chargeCount'
+]
+
+const animalIds = [
+  'animalType',
+  'animalName',
+  'animalId',
+  'animalGender',
+  'animalBite',
+  'animalSpecies',
+  'animalBreed',
+  'animalDob',
+  'animalColor',
+  'animalChip',
+  'animalAltered',
+  'animalOwner'
 ]
 
 const officersIds = [

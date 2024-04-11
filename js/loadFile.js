@@ -8,9 +8,10 @@ const loadFile = () => {
     const json = JSON.parse(reader.result)
 
     // Validate JSON file input
-    validationHelper([json], mainPageIds, ['charges', 'people', 'officers'], 'JSON')
+    validationHelper([json], mainPageIds, ['charges', 'people', 'animals', 'officers'], 'JSON')
     validationHelper(json.charges, chargesIds, ['id'], 'charges')
     validationHelper(json.people, peopleIds, ['id'], 'people')
+    validationHelper(json.animals, animalIds, ['id'], 'animals')
     validationHelper(json.officers, officersIds, ['id', 'resource'], 'officers')
 
     // Populate Document
@@ -28,8 +29,9 @@ const loadFile = () => {
       addPeople()
     })
 
-    // Update Suspect list before adding charges
+    // Update Suspect and Owner list before adding charges / animal
     updateSuspectList()
+    updateOwnerList()
 
     // Charges
     json.charges.forEach(charge => {
@@ -37,6 +39,13 @@ const loadFile = () => {
         document.getElementById(id).value = charge[id]
       })
       addCharges()
+    })
+
+    json.animals.forEach(animal => {
+      animalIds.forEach(id => {
+        document.getElementById(id).value = animal[id]
+      })
+      addAnimals()
     })
     
     // Officers

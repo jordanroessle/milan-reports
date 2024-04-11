@@ -66,6 +66,26 @@ const peopleChargesX = {
   peopleChargesFourthX: leftMargin + .75 * widthPage
 }
 
+// Animal Table
+const animalX = {
+  animalFirst: leftMargin,
+  animalFirstAnswer: leftMargin + .1 * widthPage,
+  animalSecond: leftMargin + .2 * widthPage,
+  animalSecondAnswer: leftMargin + .3 * widthPage,
+  animalThird: leftMargin + .4 * widthPage,
+  animalThirdAnswer: leftMargin + .47 * widthPage,
+  animalFourth: leftMargin + .6 * widthPage,
+  animalFourthAnswer: leftMargin + .66 * widthPage,
+  animalFifth: leftMargin + .8 * widthPage,
+  animalFifthAnswer: leftMargin + .86 * widthPage
+}
+
+const animalOwner = {
+  ownerFirst: leftMargin,
+  ownerPhone: leftMargin + .4 * widthPage,
+  ownerAddress: leftMargin + .6 * widthPage,
+}
+
 const officersX = {
   first: leftMargin,
   checkboxes: leftMargin + .3 * widthPage
@@ -81,6 +101,8 @@ const createPdf = async (data) => {
    subHeaderText: 'General Report',
    officerReportingText: `Officer Reporting: ${data.officerReporting}`,
    ihsCaseText: `IHS Case #: ${data.ihsCase}`,
+   omnigoNumber: `Omnigo #: ${data.omnigoNumber}`,
+   drNumber: `DR #: ${data.drNumber}`
   }
 
   addHeader(headerTexts)
@@ -126,15 +148,15 @@ const createPdf = async (data) => {
   // People Involved
   addSectionHeader('People Involved')
   data.people.forEach((people, index) => {
-    needNewPage(newPageCutOff, headerTexts, 'People Involved')
+    needNewPage(newPageCutOff, headerTexts, 'People Involved (cont)')
     doc.setFontSize(sectionHeaderFontSize)
     addRow(incidentX, [
-      `${people.peopleType}: ${people.lastName}, ${people.firstName}${people.middleName ? ' ' + people.middleName : ''}`,
+      `${people.peopleType}:  ${people.lastName}, ${people.firstName}${people.middleName ? ' ' + people.middleName : ''}`,
       '',
       '',
       ''
     ],
-      [fontBold, fontBold, fontNormal, fontNormal]
+      Array(4).fill(fontBold)
     )
 
     doc.setFontSize(defaultFontSize)
@@ -191,8 +213,7 @@ const createPdf = async (data) => {
 
     y += 4
     // Find charges by people
-    const allCharges = data.charges 
-    let filteredCharges = allCharges.filter(charge =>
+    const filteredCharges = data.charges.filter(charge =>
       charge.committedBy.split(' ')[0] === people.firstName 
       && charge.committedBy.split(' ')[1] === people.lastName
     )
@@ -225,11 +246,85 @@ const createPdf = async (data) => {
   })
 
   needNewPage(newPageCutOff, headerTexts)
+
+  // Animals
+  addSectionHeader('Animals Involved')
+  data.animals.forEach((animal, index) => {
+    needNewPage(newPageCutOff, headerTexts, 'Animals Involved (cont)')
+    doc.setFontSize(sectionHeaderFontSize)
+    addRow(animalX, [
+      `${animal.animalType}:  ${animal.animalName} - ${animal.animalGender} ${animal.animalSpecies}`,
+      '', '', '', '', '', '', '', '', ''
+    ],
+      Array(10).fill(fontBold)
+    )
+    y += 2
+
+    doc.setFontSize(defaultFontSize)
+    addRow(animalX, [
+      '',
+      '',
+      'Animal ID:',
+      animal.animalId,
+      'Chip #:',
+      animal.animalChip,
+      'Breed:',
+      animal.animalBreed,
+      'Color:',
+      animal.animalColor,
+    ],
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
+
+    addRow(animalX, [
+      '',
+      '',
+      'Bite History:',
+      animal.animalBite,
+      'Altered:',
+      animal.animalAltered,
+      'DOB:',
+      animal.animalDob,
+      'Age:',
+      calculateAge(animal.animalDob),
+    ],
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
+
+    y += 4
+
+    // Find owner
+    const owner = data.people.find(person =>
+      animal.animalOwner.split(' ')[0] === person.firstName 
+      && animal.animalOwner.split(' ')[1] === person.lastName
+    )
+
+    addRow(animalOwner, ['Owner/Gaurdian', 'Phone', 'Address'],
+     Array(3).fill(fontNormal)
+    )
+    addRow(animalOwner, [animal.animalOwner, owner.phoneNumber, owner.addressLineOne],
+      Array(3).fill(fontBold)
+    )
+    addRow(animalOwner, ['', '', owner.addressLineTwo],
+      Array(3).fill(fontBold)
+    )
+
+    y += 1
+    // Separation Line
+    if (index !== data.animals.length - 1) {
+      doc.line(leftMargin, y, leftMargin + widthPage, y)
+    }
+    y += 5
+  })
+
+  needNewPage(newPageCutOff, headerTexts)
+
   // Officers Involved
   addSectionHeader('Other Officers Involved')
   y += 2
   doc.setFont(...fontBold)
   data.officers.forEach(officer => {
+    needNewPage(newPageCutOff, headerTexts, 'Other Officers Involved (cont)')
     // Officer row
     doc.text(`Ofc. ${officer.officerName} (${officer.officerId})`, leftMargin, y)
     addCheckbox(leftMargin + .4 * widthPage, officer.resource.includes('Audio'), 'Audio')
