@@ -47,6 +47,49 @@ const addHeaderRectangle = (sizing, text) => {
   y += 6
 }
 
+const addPhotoLogRow = (rowInfo) => {
+  const imageHeight = 20
+  const imageWidth = 20
+
+  const seperators = {
+    first: leftMargin,
+    second: leftMargin + .05 * widthPage,
+    third: leftMargin + .75 * widthPage,
+    fourth: leftMargin + widthPage
+  }
+
+  const textHeight = doc.getTextDimensions(rowInfo.count).h
+
+  let rectHeight = rectH(textHeight)
+  if (rowInfo.image) {
+    const wrappedHeight = wrapText(rowInfo.comment, seperators.second + 2, seperators.third, false) - y
+    rectHeight = wrappedHeight > imageHeight ? wrappedHeight : imageHeight
+    rectHeight += 2
+  }
+
+  // Counter
+  doc.rect(seperators.first, y, seperators.second - seperators.first, rectHeight)
+  doc.text(rowInfo.count, seperators.first + 2, y + textHeight, { align: 'left', baseline: 'middle' })
+
+  // Comments
+  doc.rect(seperators.second, y, seperators.third - seperators.second, rectHeight)
+  y += textHeight + 1
+  wrapText(rowInfo.comment, seperators.second + 2, seperators.third - 2, true)
+  y -= textHeight + 1 
+
+  // Image
+  doc.rect(seperators.third, y, seperators.fourth - seperators.third, rectHeight)
+  if (rowInfo.image) {
+    const image = new Image()
+    image.src = rowInfo.image
+    doc.addImage(image, 'JPEG', seperators.third + 2, y + 1, imageWidth, imageHeight)
+  } else {
+    doc.text('Photo', seperators.third + 2, y + rectHeight / 2, { align: 'left', baseline: 'middle' })
+  }
+  
+  y += rectHeight
+}
+
 // Create Header
 const addHeader = (headerTexts) => {
     // Header
@@ -111,7 +154,7 @@ const addRow = (divider, texts, fonts) => {
 }
 
 // Wrap Text
-const wrapText = (text) => {
+const wrapText = (text, x1, x2, shouldPrint) => {
   const lineHeight = doc.getTextDimensions(text).h
   const words = text.split(' ');
   let line = '';
@@ -121,16 +164,16 @@ const wrapText = (text) => {
     const word = words[i]
     const width = doc.getTextDimensions(line + word).w
 
-    if (width < widthPage) {
+    if (width < x2 - x1) {
       line += (line === '' ? '' : ' ') + word;
     } else {
-      doc.text(line, leftMargin, yPosition);
+      shouldPrint && doc.text(line, x1, yPosition);
       yPosition += lineHeight;
       line = word;
     }
   }
-  doc.text(line, leftMargin, yPosition)
-  y = yPosition + 4
+  shouldPrint && doc.text(line, x1, yPosition)
+  return yPosition + 4
 }
 
 // Create Checkbox
@@ -157,5 +200,29 @@ const needNewPage = (cutOff, headerTexts, sectionHeader) => {
   doc.addPage()
   y = topMargin
   addHeader(headerTexts)
-  sectionHeader ? addSectionHeader(sectionHeader) : ''
+  sectionHeader && addSectionHeader(sectionHeader)
+}
+
+// New Page Photos
+const needNewPagePhotos = (cutOff, headerTexts, data) => {
+  if (y < cutOff ) {
+    return
+  }
+  needNewPage(cutOff, headerTexts)
+  photoDates(data)
+  addPhotoLogRow({
+    count: 'Ctr',
+    comment: 'Title / Comment',
+  })
+}
+
+// Add dates to top of Photo Log
+const photoDates = (data) => {
+  const d = new Date()
+  const dateTimeLocalValue = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1).split(':')
+  const finalDate = dateTimeLocalValue[0] + dateTimeLocalValue[1]
+
+  doc.setFontSize(defaultFontSize)
+  addRow(datesX, ['Incident Occured On:', data.datetimeOccured === '' ? '' : cleanDate(data.datetimeOccured)], [fontNormal, fontBold])
+  addRow(datesX, ['Report Created On:', cleanDate(finalDate)], [fontNormal, fontBold])
 }

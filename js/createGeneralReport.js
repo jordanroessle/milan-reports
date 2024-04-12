@@ -142,7 +142,7 @@ const createPdf = async (data) => {
 
   // Probable Cause
   addSectionHeader('Probable Cause')
-  wrapText(data.probableCause)
+  y = wrapText(data.probableCause, leftMargin, leftMargin + widthPage, true)
 
   // People Involved
   addSectionHeader('People Involved')

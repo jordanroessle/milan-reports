@@ -10,6 +10,11 @@ const topMargin = 20
 // Width of writable area
 const widthPage = doc.internal.pageSize.width - leftMargin - rightMargin
 
+const datesX = {
+  descX: leftMargin,
+  dateX: leftMargin + .17 * widthPage
+}
+
 // Height addPage cutoff
 const newPageCutOff = 250
 
@@ -29,14 +34,23 @@ const createPhotoLog = async (data) => {
   addHeader(headerTexts)
   y += 2
 
-  doc.setFontSize(defaultFontSize)
-  addRow({hi: leftMargin}, [`Incident Date: ${cleanDate(data.datetimeOccured)}`], [fontNormal])
+  photoDates(data)
 
-  addRowWithRectangle()
+  y += 2
 
-  // const image = new Image()
-  // image.src = data.imageSrc[0]
-  // doc.addImage(image, 'JPEG', leftMargin, y, 15, 15)
+  addPhotoLogRow({
+    count: 'Ctr',
+    comment: 'Title / Comment',
+  })
+
+  data.imageSrc.forEach((image, index) => {
+    needNewPagePhotos(newPageCutOff, headerTexts, data)
+    addPhotoLogRow({
+      count: `${index + 1}`,
+      comment: data.comments[index],
+      image
+    })
+  })
 
   return doc
 }

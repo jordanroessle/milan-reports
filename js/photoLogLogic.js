@@ -105,12 +105,12 @@ const downloadPhotoLog = async () => {
       if (info.tagName === 'LABEL') {
         data.imageSrc.push(info.children[0].src)
       }
-      if (data.tagName === 'TEXTAREA') {
-        info.comments.push(info.value)
+      if (info.tagName === 'TEXTAREA') {
+        data.comments.push(info.value)
       }
     }
   }
-  
+
   if (data.imageSrc.length === 0) {
     return
   }

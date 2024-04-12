@@ -34,8 +34,13 @@ const updateTotalPhotos = () => {
 
 // Clean Date
 const cleanDate = (date) => {
-  return date.replace('T', ' ').replaceAll('-', '/')
+  const tempDate = date.split('T')
+  const firstSplit = tempDate[0].split('-')
+  const timeOfDay = parseInt(tempDate[1].split(':')[0]) > 11 ? 'PM' : 'AM'
+  return `${firstSplit[1]}/${firstSplit[2]}/${firstSplit[0]} ${tempDate[1]} ${timeOfDay}`
 }
+
+
 
 // Calculate Age
 const calculateAge = (dob) => {
