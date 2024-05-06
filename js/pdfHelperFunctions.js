@@ -205,7 +205,7 @@ const addCheckbox = (xPlacement, isChecked, text) => {
 // Check if need new page, if yes add page and reset y
 const needNewPage = (cutOff, headerTexts, sectionHeader) => {
   if (y < cutOff ) {
-    return
+    return false
   }
 
   // Add new page and re-add header
@@ -213,6 +213,7 @@ const needNewPage = (cutOff, headerTexts, sectionHeader) => {
   y = topMargin
   addHeader(headerTexts)
   sectionHeader && addSectionHeader(sectionHeader)
+  return true
 }
 
 // New Page Photos
