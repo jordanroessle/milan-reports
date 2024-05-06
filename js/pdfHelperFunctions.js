@@ -1,3 +1,6 @@
+// Height workaround
+let heightDiff = 0
+
 // Font Sizes
 const defaultFontSize = 10
 const titleFontSize = 20
@@ -47,42 +50,55 @@ const addHeaderRectangle = (sizing, text) => {
   y += 6
 }
 
-const addPhotoLog = (rowInfo) => {
+const addPhotoLog = (data, index, width, leftBound, centerBound) => {
+  const boundToUse = index % 2 === 0 ? leftBound : centerBound
+
   const initialY = y
   y += 6
   const imageHeight = 70
   const imageWidth = 70
-  const textLeftBoundary = rowInfo.leftBound + 2;
-  const textRightBoundary = rowInfo.leftBound + rowInfo.width - 4
+  const textLeftBoundary = boundToUse + 2;
+  const textRightBoundary = boundToUse + width - 4
 
   doc.setFontSize(sectionHeaderFontSize)
 
   // Counter
-  addText(`Image #${rowInfo.count}`, textLeftBoundary)
+  addText(`Image #${index + 1}`, textLeftBoundary)
   y += 1
 
   // Comments
   doc.setFont(...fontBold)
-  y = wrapText(rowInfo.comment, textLeftBoundary, textRightBoundary, true)
+  y = wrapText(data.comments[index], textLeftBoundary, textRightBoundary, true)
   doc.setFont(...fontNormal)
 
   const imageLeftPlacement = textLeftBoundary + (textRightBoundary - textLeftBoundary - imageWidth) / 2 
 
   // Image
-  if (rowInfo.image) {
-    const image = new Image()
-    image.src = rowInfo.image
-    doc.addImage(image, 'JPEG', imageLeftPlacement, y + 1, imageWidth, imageHeight)
-  }
+  const image = new Image()
+  image.src = data.imageSrc[index]
+  doc.addImage(image, 'JPEG', imageLeftPlacement, y + 1, imageWidth, imageHeight)
 
   y += imageHeight - initialY + 2
 
-  doc.rect(rowInfo.leftBound, initialY, rowInfo.width, y)
+  if (index % 2 === 0) {
+    const currentHeight = y
+    let heightToUse = y
+    if (data.imageSrc[index + 1]) {
+      y = initialY + 6 + doc.getTextDimensions('nom').h + 1
+      y = wrapText(data.comments[index + 1], textLeftBoundary, textRightBoundary, false)
+      y += imageHeight - initialY + 2
 
-  if (rowInfo.count % 2 === 1) {
+      heightToUse = currentHeight > y ? currentHeight : y
+      heightDiff = heightToUse - y
+      doc.rect(centerBound, initialY, width, heightToUse)
+    }
+    doc.rect(leftBound, initialY, width, heightToUse)
     return initialY
   }
-  return y + initialY
+
+  const returnMe = y + initialY + heightDiff
+  heightDiff = 0
+  return returnMe
 }
 
 // Create Header

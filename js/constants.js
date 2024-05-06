@@ -55,7 +55,9 @@ const animalIds = [
   'animalColor',
   'animalChip',
   'animalAltered',
-  'animalOwner'
+  'animalOwner',
+  'animalLicense',
+  'animalRabies'
 ]
 
 const officersIds = [

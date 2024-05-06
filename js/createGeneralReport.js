@@ -68,13 +68,12 @@ const peopleChargesX = {
 // Animal Table
 const animalX = {
   animalFirst: leftMargin,
-  animalFirstAnswer: leftMargin + .1 * widthPage,
-  animalSecond: leftMargin + .2 * widthPage,
-  animalSecondAnswer: leftMargin + .3 * widthPage,
-  animalFourth: leftMargin + .5 * widthPage,
-  animalFourthAnswer: leftMargin + .57 * widthPage,
-  animalFifth: leftMargin + .75 * widthPage,
-  animalFifthAnswer: leftMargin + .81 * widthPage
+  animalSecond: leftMargin + .15 * widthPage,
+  animalSecondAnswer: leftMargin + .25 * widthPage,
+  animalFourth: leftMargin + .45 * widthPage,
+  animalFourthAnswer: leftMargin + .51 * widthPage,
+  animalFifth: leftMargin + .67 * widthPage,
+  animalFifthAnswer: leftMargin + .76 * widthPage
 }
 
 const animalOwner = {
@@ -89,6 +88,7 @@ const officersX = {
 }
 
 const createPdf = async (data) => {
+  doc = new jsPDF()
   y = topMargin
 
   // Set Header Texts
@@ -266,9 +266,9 @@ const createPdf = async (data) => {
     doc.setFontSize(sectionHeaderFontSize)
     addRow(animalX, [
       `${animal.animalType}:  ${animal.animalName}`,
-      '', '', '', '', '', '', ''
+      '', '', '', '', '', ''
     ],
-      Array(8).fill(fontBold)
+      Array(7).fill(fontBold)
     )
     y += 2
 
@@ -276,51 +276,50 @@ const createPdf = async (data) => {
     doc.setFontSize(defaultFontSize)
     addRow(animalX, [
       '',
+      'Animal ID:',
+      animal.animalId,
+      'Chip #:',
+      animal.animalChip,
+      'Dog Lic. #:',
+      animal.animalLicense
+    ],
+      [fontNormal, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
+
+    addRow(animalX, [
       '',
       'Species:',
       animal.animalSpecies,
       'Breed:',
       animal.animalBreed,
       'Color:',
-      animal.animalColor,
+      animal.animalColor
     ],
-      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+      [fontNormal, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
 
     addRow(animalX, [
-      '',
-      '',
-      'Animal ID:',
-      animal.animalId,
-      'Sex:',
-      animal.animalGender,
-      'Age:',
-      age
-    ],
-      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
-    )
-
-    addRow(animalX, [
-      '',
-      '',
-      'Chip #:',
-      animal.animalChip,
-      'Altered:',
-      animal.animalAltered,
-      'DOB:',
-      animal.animalDob
-    ],
-      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
-    )
-
-    addRow(animalX, [
-      '',
       '',
       'Bite History:',
       animal.animalBite,
-      '', '', '', ''
+      'Sex:',
+      animal.animalGender,
+      'Altered:',
+      animal.animalAltered
     ],
-      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+      [fontNormal, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
+
+    addRow(animalX, [
+      '',
+      'Rabies Shot:',
+      animal.animalRabies,
+      'Age:',
+      age,
+      'DOB:',
+      animal.animalDob
+    ],
+      [fontNormal, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
 
     y += 4

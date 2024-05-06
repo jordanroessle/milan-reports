@@ -19,6 +19,7 @@ const datesX = {
 const newPageCutOff = 250
 
 const createPhotoLog = async (data) => {
+  doc = new jsPDF()
   y = topMargin
 
   // Set Header Texts
@@ -43,29 +44,13 @@ const createPhotoLog = async (data) => {
       needNewPagePhotos(headerTexts, data)
     }
 
-    let leftBound;
-    switch (index % 4) {
-      case 0:
-        leftBound = leftMargin
-        break;
-      case 1:
-        leftBound = leftMargin + widthPage / 2
-        break;
-      case 2:
-        leftBound = leftMargin
-        break;
-      case 3:
-        leftBound = leftMargin + widthPage / 2
-        break;
-    }
-    y = addPhotoLog({
-      count: `${index + 1}`,
-      comment: data.comments[index],
-      image,
-      leftBound,
-      width: widthPage / 2,
-    })
-    
+    y = addPhotoLog(
+      data,
+      index,
+      widthPage / 2,
+      leftMargin,
+      leftMargin + widthPage / 2
+    )
   })
 
   return doc

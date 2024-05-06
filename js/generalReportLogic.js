@@ -102,6 +102,8 @@ const addAnimals = () => {
     animalAge: document.getElementById('animalAge').value,
     animalColor: document.getElementById('animalColor').value,
     animalChip: document.getElementById('animalChip').value,
+    animalRabies: document.getElementById('animalRabies').value,
+    animalLicense: document.getElementById('animalLicense').value,
     animalAltered: document.getElementById('animalAltered').value,
     animalOwner: document.getElementById('animalOwner').value,
     id: self.crypto.randomUUID()
