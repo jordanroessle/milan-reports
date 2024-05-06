@@ -359,20 +359,27 @@
                                           </div>
                                         </div>
                                         <div class="row">
-                                          <div class="form-group col-md-4">
+                                          <div class="form-group col-md-6">
                                             <label for="animalId">Animal ID</label>
                                             <input type="text" class="form-control" id="animalId">
                                           </div>
-                                          <div class="form-group col-md-4">
+                                          <div class="form-group col-md-6">
+                                            <label for="animalChip">Chip #</label>
+                                            <input type="text" class="form-control" id="animalChip">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="form-group col-md-6">
                                             <label for="animalGender">Sex</label>
                                             <select id="animalGender" class="form-control">
                                               <option selected>Male</option>
                                               <option>Female</option>
                                             </select>
                                           </div>
-                                          <div class="form-group col-md-4">
-                                            <label for="animalBite">Bite History</label>
-                                            <select id="animalBite" class="form-control">
+                                          <!-- Altered -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalAltered">Altered</label>
+                                            <select id="animalAltered" class="form-control">
                                               <option selected>Yes</option>
                                               <option>No</option>
                                             </select>
@@ -399,21 +406,23 @@
                                           <!-- Date of Birth -->
                                           <div class="form-group col-md-6">
                                             <label for="animalDob">DOB</label>
-                                            <input type="date" class="form-control" id="animalDob">
+                                            <input type="date" class="form-control" id="animalDob" onchange="calculateAgeOnChange(this.value)">
                                           </div>
-                                          <!-- Chip -->
-                                          <div class="form-group col-md-3">
-                                            <label for="animalChip">Chip #</label>
-                                            <input type="text" class="form-control" id="animalChip">
+                                          <!-- Animal Age -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalAge">Age</label>
+                                            <input type="text" class="form-control" id="animalAge">
                                           </div>
-                                          <!-- Altered -->
-                                          <div class="form-group col-md-3">
-                                            <label for="animalAltered">Altered</label>
-                                            <select id="animalAltered" class="form-control">
+                                        </div>
+                                        <div class="row">
+                                          <!-- Bite History -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalBite">Bite History</label>
+                                            <select id="animalBite" class="form-control">
                                               <option selected>Yes</option>
                                               <option>No</option>
                                             </select>
-                                          </div> 
+                                          </div>
                                         </div>
                                         <div class="row">
                                           <div class="form-group col-md-12">

@@ -25,31 +25,47 @@ const createPhotoLog = async (data) => {
   const headerTexts = {
     headerText: 'Idaho Humane Society - Animal Control',
     subHeaderText: 'General Photo Log',
-    officerReportingText: `Officer Reporting: ${data.officerReporting}`,
-    ihsCaseText: `IHS Case #: ${data.ihsCase}`,
-    omnigoNumber: `Omnigo #: ${data.omnigoNumber}`,
-    drNumber: `DR #: ${data.drNumber}`
-  }
+    boxes: [
+      `Officer Reporting: ${data.officerReporting}`,
+      `IHS Case #: ${data.ihsCase}`,
+      `Omnigo #: ${data.omnigoNumber}`,
+      `DR #: ${data.drNumber}`
+     ]
+    }
   
   addHeader(headerTexts)
   y += 2
 
   photoDates(data)
 
-  y += 2
-
-  addPhotoLogRow({
-    count: 'Ctr',
-    comment: 'Title / Comment',
-  })
-
   data.imageSrc.forEach((image, index) => {
-    needNewPagePhotos(newPageCutOff, headerTexts, data)
-    addPhotoLogRow({
+    if (index !== 0 && index % 4 == 0) {
+      needNewPagePhotos(headerTexts, data)
+    }
+
+    let leftBound;
+    switch (index % 4) {
+      case 0:
+        leftBound = leftMargin
+        break;
+      case 1:
+        leftBound = leftMargin + widthPage / 2
+        break;
+      case 2:
+        leftBound = leftMargin
+        break;
+      case 3:
+        leftBound = leftMargin + widthPage / 2
+        break;
+    }
+    y = addPhotoLog({
       count: `${index + 1}`,
       comment: data.comments[index],
-      image
+      image,
+      leftBound,
+      width: widthPage / 2,
     })
+    
   })
 
   return doc

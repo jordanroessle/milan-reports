@@ -12,13 +12,14 @@ const widthPage = doc.internal.pageSize.width - leftMargin - rightMargin
 
 // Height addPage cutoff
 const newPageCutOff = 250
+const smallCutOff = 275
 
 // Incident Table
 const incidentX = {
   incidentOccuredX: leftMargin,
   incidentReportedX: leftMargin + .25 * widthPage,
   incidentLocationX: leftMargin + .5 * widthPage,
-  incidentJurisdictionX: leftMargin + .75 * widthPage,
+  incidentJurisdictionX: leftMargin + .8 * widthPage,
 }
 
 // Charges Table
@@ -46,8 +47,6 @@ const peopleHeaderX = {
 const peopleContactInfoX = {
   peopleFirstX: leftMargin + .4 * widthPage,
   peopleSecondX: leftMargin + .46 * widthPage,
-  peopleThirdX: leftMargin + .60 * widthPage,
-  peopleFourthX: leftMargin + .66 * widthPage
 }
 
 const peopleIdentifyX = {
@@ -62,8 +61,8 @@ const peopleIdentifyX = {
 const peopleChargesX = {
   peopleChargesFirstX: leftMargin,
   peopleChargesSecondX: leftMargin + .5 * widthPage,
-  peopleChargesThirdX: leftMargin + .65 * widthPage,
-  peopleChargesFourthX: leftMargin + .75 * widthPage
+  peopleChargesThirdX: leftMargin + .7 * widthPage,
+  peopleChargesFourthX: leftMargin + .8 * widthPage
 }
 
 // Animal Table
@@ -72,12 +71,10 @@ const animalX = {
   animalFirstAnswer: leftMargin + .1 * widthPage,
   animalSecond: leftMargin + .2 * widthPage,
   animalSecondAnswer: leftMargin + .3 * widthPage,
-  animalThird: leftMargin + .4 * widthPage,
-  animalThirdAnswer: leftMargin + .47 * widthPage,
-  animalFourth: leftMargin + .6 * widthPage,
-  animalFourthAnswer: leftMargin + .66 * widthPage,
-  animalFifth: leftMargin + .8 * widthPage,
-  animalFifthAnswer: leftMargin + .86 * widthPage
+  animalFourth: leftMargin + .5 * widthPage,
+  animalFourthAnswer: leftMargin + .57 * widthPage,
+  animalFifth: leftMargin + .75 * widthPage,
+  animalFifthAnswer: leftMargin + .81 * widthPage
 }
 
 const animalOwner = {
@@ -98,10 +95,12 @@ const createPdf = async (data) => {
   const headerTexts = {
    headerText: 'Idaho Humane Society - Animal Control',
    subHeaderText: 'General Report',
-   officerReportingText: `Officer Reporting: ${data.officerReporting}`,
-   ihsCaseText: `IHS Case #: ${data.ihsCase}`,
-   omnigoNumber: `Omnigo #: ${data.omnigoNumber}`,
-   drNumber: `DR #: ${data.drNumber}`
+   boxes: [
+    `Officer Reporting: ${data.officerReporting}`,
+    `IHS Case #: ${data.ihsCase}`,
+    `Omnigo #: ${data.omnigoNumber}`,
+    `DR #: ${data.drNumber}`
+   ]
   }
 
   addHeader(headerTexts)
@@ -194,11 +193,16 @@ const createPdf = async (data) => {
     addRow(peopleContactInfoX, [
       'Phone: ',
       people.phoneNumber,
+    ],
+      [fontNormal, fontBold]
+    )
+    addRow(peopleContactInfoX, [
       'Email: ',
       people.email
     ],
-      [fontNormal, fontBold, fontNormal, fontBold]
+      [fontNormal, fontBold]
     )
+
     addRow(peopleIdentifyX, [
       'License: ',
       people.license,
@@ -249,30 +253,64 @@ const createPdf = async (data) => {
   // Animals
   addSectionHeader('Animals Involved')
   data.animals.forEach((animal, index) => {
+    //  Calculate Age
+    let age = ''
+    if (animal.animalAge) {
+      age = animal.animalAge
+    } else if (animal.animalDob) {
+      age = calculateAge(animal.animalDob)
+    }
+  
+    // Header Texts
     needNewPage(newPageCutOff, headerTexts, 'Animals Involved (cont)')
     doc.setFontSize(sectionHeaderFontSize)
     addRow(animalX, [
-      `${animal.animalType}:  ${animal.animalName} - ${animal.animalGender} ${animal.animalSpecies}`,
-      '', '', '', '', '', '', '', '', ''
+      `${animal.animalType}:  ${animal.animalName}`,
+      '', '', '', '', '', '', ''
     ],
-      Array(10).fill(fontBold)
+      Array(8).fill(fontBold)
     )
     y += 2
 
+    // All info
     doc.setFontSize(defaultFontSize)
     addRow(animalX, [
       '',
       '',
-      'Animal ID:',
-      animal.animalId,
-      'Chip #:',
-      animal.animalChip,
+      'Species:',
+      animal.animalSpecies,
       'Breed:',
       animal.animalBreed,
       'Color:',
       animal.animalColor,
     ],
-      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
+
+    addRow(animalX, [
+      '',
+      '',
+      'Animal ID:',
+      animal.animalId,
+      'Sex:',
+      animal.animalGender,
+      'Age:',
+      age
+    ],
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+    )
+
+    addRow(animalX, [
+      '',
+      '',
+      'Chip #:',
+      animal.animalChip,
+      'Altered:',
+      animal.animalAltered,
+      'DOB:',
+      animal.animalDob
+    ],
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
 
     addRow(animalX, [
@@ -280,14 +318,9 @@ const createPdf = async (data) => {
       '',
       'Bite History:',
       animal.animalBite,
-      'Altered:',
-      animal.animalAltered,
-      'DOB:',
-      animal.animalDob,
-      'Age:',
-      calculateAge(animal.animalDob),
+      '', '', '', ''
     ],
-      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
+      [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
 
     y += 4
@@ -323,7 +356,7 @@ const createPdf = async (data) => {
   y += 2
   doc.setFont(...fontBold)
   data.officers.forEach(officer => {
-    needNewPage(newPageCutOff, headerTexts, 'Other Officers Involved (cont)')
+    needNewPage(smallCutOff, headerTexts, 'Other Officers Involved (cont)')
     // Officer row
     doc.text(`Ofc. ${officer.officerName} (${officer.officerId})`, leftMargin, y)
     addCheckbox(leftMargin + .4 * widthPage, officer.resource.includes('Audio'), 'Audio')

@@ -99,6 +99,7 @@ const addAnimals = () => {
     animalSpecies: document.getElementById('animalSpecies').value,
     animalBreed: document.getElementById('animalBreed').value,
     animalDob: document.getElementById('animalDob').value,
+    animalAge: document.getElementById('animalAge').value,
     animalColor: document.getElementById('animalColor').value,
     animalChip: document.getElementById('animalChip').value,
     animalAltered: document.getElementById('animalAltered').value,
@@ -310,4 +311,8 @@ const downloadFiles = async () => {
   a.href = URL.createObjectURL(file)
   a.download = `general-report-${data.ihsCase}.json`
   a.click()
+}
+
+const calculateAgeOnChange = (e) => {
+  document.getElementById('animalAge').value = calculateAge(e)
 }

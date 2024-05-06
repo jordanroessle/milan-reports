@@ -47,47 +47,42 @@ const addHeaderRectangle = (sizing, text) => {
   y += 6
 }
 
-const addPhotoLogRow = (rowInfo) => {
-  const imageHeight = 20
-  const imageWidth = 20
+const addPhotoLog = (rowInfo) => {
+  const initialY = y
+  y += 6
+  const imageHeight = 70
+  const imageWidth = 70
+  const textLeftBoundary = rowInfo.leftBound + 2;
+  const textRightBoundary = rowInfo.leftBound + rowInfo.width - 4
 
-  const seperators = {
-    first: leftMargin,
-    second: leftMargin + .05 * widthPage,
-    third: leftMargin + .75 * widthPage,
-    fourth: leftMargin + widthPage
-  }
-
-  const textHeight = doc.getTextDimensions(rowInfo.count).h
-
-  let rectHeight = rectH(textHeight)
-  if (rowInfo.image) {
-    const wrappedHeight = wrapText(rowInfo.comment, seperators.second + 2, seperators.third, false) - y
-    rectHeight = wrappedHeight > imageHeight ? wrappedHeight : imageHeight
-    rectHeight += 2
-  }
+  doc.setFontSize(sectionHeaderFontSize)
 
   // Counter
-  doc.rect(seperators.first, y, seperators.second - seperators.first, rectHeight)
-  doc.text(rowInfo.count, seperators.first + 2, y + textHeight, { align: 'left', baseline: 'middle' })
+  addText(`Image #${rowInfo.count}`, textLeftBoundary)
+  y += 1
 
   // Comments
-  doc.rect(seperators.second, y, seperators.third - seperators.second, rectHeight)
-  y += textHeight + 1
-  wrapText(rowInfo.comment, seperators.second + 2, seperators.third - 2, true)
-  y -= textHeight + 1 
+  doc.setFont(...fontBold)
+  y = wrapText(rowInfo.comment, textLeftBoundary, textRightBoundary, true)
+  doc.setFont(...fontNormal)
+
+  const imageLeftPlacement = textLeftBoundary + (textRightBoundary - textLeftBoundary - imageWidth) / 2 
 
   // Image
-  doc.rect(seperators.third, y, seperators.fourth - seperators.third, rectHeight)
   if (rowInfo.image) {
     const image = new Image()
     image.src = rowInfo.image
-    doc.addImage(image, 'JPEG', seperators.third + 2, y + 1, imageWidth, imageHeight)
-  } else {
-    doc.text('Photo', seperators.third + 2, y + rectHeight / 2, { align: 'left', baseline: 'middle' })
+    doc.addImage(image, 'JPEG', imageLeftPlacement, y + 1, imageWidth, imageHeight)
   }
-  
-  y += rectHeight
+
+  y += imageHeight - initialY + 2
+
+  doc.rect(rowInfo.leftBound, initialY, rowInfo.width, y)
+
+  if (rowInfo.count % 2 === 1) {
+    return initialY
+  }
+  return y + initialY
 }
 
 // Create Header
@@ -101,20 +96,21 @@ const addHeader = (headerTexts) => {
     doc.setFontSize(subTitleFontSize)
     addText(headerTexts.subHeaderText, alignCenter(headerTexts.subHeaderText))
   
+    // Top Right Boxes
     doc.setFont(...fontNormal)
     doc.setFontSize(sectionHeaderFontSize)
   
-    // Officer Reporting
-    addHeaderRectangle(headerTexts.officerReportingText, headerTexts.officerReportingText)
-  
-    // IHS Case Number
-    addHeaderRectangle(headerTexts.officerReportingText, headerTexts.ihsCaseText)
+    let longestWidth = 0
+    headerTexts.boxes.forEach((box, i) => {
+      if (rectW(doc.getTextDimensions(box).w) > rectW(doc.getTextDimensions(longestWidth).w)) {
+        longestWidth = headerTexts.boxes[i]
+      }
+    })
 
-    // Omnigo #
-    addHeaderRectangle(headerTexts.officerReportingText, headerTexts.omnigoNumber)
+    headerTexts.boxes.forEach(box => {
+      addHeaderRectangle(longestWidth, box)
+    })
 
-    // DR #
-    addHeaderRectangle(headerTexts.officerReportingText, headerTexts.drNumber)
     y += 1
 }
 
@@ -204,23 +200,16 @@ const needNewPage = (cutOff, headerTexts, sectionHeader) => {
 }
 
 // New Page Photos
-const needNewPagePhotos = (cutOff, headerTexts, data) => {
-  if (y < cutOff ) {
-    return
-  }
-  needNewPage(cutOff, headerTexts)
+const needNewPagePhotos = (headerTexts, data) => {
+  needNewPage(0, headerTexts)
   photoDates(data)
-  addPhotoLogRow({
-    count: 'Ctr',
-    comment: 'Title / Comment',
-  })
 }
 
 // Add dates to top of Photo Log
 const photoDates = (data) => {
   const d = new Date()
   const dateTimeLocalValue = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1).split(':')
-  const finalDate = dateTimeLocalValue[0] + dateTimeLocalValue[1]
+  const finalDate = dateTimeLocalValue[0] + ':' + dateTimeLocalValue[1]
 
   doc.setFontSize(defaultFontSize)
   addRow(datesX, ['Incident Occured On:', data.datetimeOccured === '' ? '' : cleanDate(data.datetimeOccured)], [fontNormal, fontBold])

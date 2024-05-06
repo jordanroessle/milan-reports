@@ -40,8 +40,6 @@ const cleanDate = (date) => {
   return `${firstSplit[1]}/${firstSplit[2]}/${firstSplit[0]} ${tempDate[1]} ${timeOfDay}`
 }
 
-
-
 // Calculate Age
 const calculateAge = (dob) => {
   const now = new Date()

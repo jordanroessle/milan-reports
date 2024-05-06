@@ -51,6 +51,7 @@ const animalIds = [
   'animalSpecies',
   'animalBreed',
   'animalDob',
+  'animalAge',
   'animalColor',
   'animalChip',
   'animalAltered',
