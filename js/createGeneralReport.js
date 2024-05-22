@@ -202,7 +202,12 @@ const createPdf = async (data) => {
     ],
       [fontNormal, fontBold]
     )
-
+    addRow(peopleContactInfoX, [
+      'SSN: ',
+      people.ssn
+    ],
+      [fontNormal, fontBold]
+    )
     addRow(peopleIdentifyX, [
       'License: ',
       people.license,

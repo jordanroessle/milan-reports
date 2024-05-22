@@ -42,6 +42,9 @@ const cleanDate = (date) => {
 
 // Calculate Age
 const calculateAge = (dob) => {
+  if (!dob) {
+    return '';
+  }
   const now = new Date()
   const dobSplit = dob.split('-')
   let age

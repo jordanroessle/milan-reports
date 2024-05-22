@@ -20,7 +20,7 @@ const createNarrativeReport = async (data) => {
   // Set Header Texts
   const headerTexts = {
     headerText: 'Idaho Humane Society - Animal Control',
-    subHeaderText: 'General Photo Log',
+    subHeaderText: 'Narrative Report',
     boxes: [
       `Officer Reporting: ${data.officerReporting}`,
       `IHS Case #: ${data.ihsCase}`,
