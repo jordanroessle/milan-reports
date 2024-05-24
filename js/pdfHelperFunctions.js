@@ -168,24 +168,31 @@ const addRow = (divider, texts, fonts) => {
 // Wrap Text
 const wrapText = (text, x1, x2, shouldPrint) => {
   const lineHeight = doc.getTextDimensions(text).h
-  const words = text.split(' ');
-  let line = '';
-  let yPosition = y;
 
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i]
-    const width = doc.getTextDimensions(line + word).w
+  const paragraphs = text.split('\n')
 
-    if (width < x2 - x1) {
-      line += (line === '' ? '' : ' ') + word;
-    } else {
-      shouldPrint && doc.text(line, x1, yPosition);
-      yPosition += lineHeight;
-      line = word;
+  for (const paragraph of paragraphs) {
+    const words = paragraph.split(' ');
+    let line = '';
+    let yPosition = y;
+
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i]
+      const width = doc.getTextDimensions(line + word).w
+
+      if (width < x2 - x1) {
+        line += (line === '' ? '' : ' ') + word;
+      } else {
+        shouldPrint && doc.text(line, x1, yPosition);
+        yPosition += lineHeight;
+        line = word;
+      }
     }
+    shouldPrint && doc.text(line, x1, yPosition)
+    y = yPosition + lineHeight
   }
-  shouldPrint && doc.text(line, x1, yPosition)
-  return yPosition + 4
+
+  return y + 4
 }
 
 // Create Checkbox
