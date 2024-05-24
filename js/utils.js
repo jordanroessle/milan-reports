@@ -43,7 +43,7 @@ const cleanDate = (date) => {
 // Calculate Age
 const calculateAge = (dob) => {
   if (!dob) {
-    return '';
+    return 'n/a';
   }
   const now = new Date()
   const dobSplit = dob.split('-')
@@ -59,4 +59,22 @@ const calculateAge = (dob) => {
     age = now.getFullYear() - dobSplit[0] - 1
   }
   return age.toString()
+}
+
+// Text Splitter
+const textSplitter = (text, maxLength) => {
+  let firstLine = ''
+  if (text.length > maxLength) {
+    const split = text.split(' ')
+    for(const word of split) {
+      if (firstLine.length + word.length < maxLength) {
+        firstLine += word + ' '
+      } else {
+        break
+      }
+    }
+  } else {
+    firstLine = text
+  }
+  return [firstLine, text.slice(firstLine.length)]
 }

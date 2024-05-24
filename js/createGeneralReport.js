@@ -14,6 +14,9 @@ const widthPage = doc.internal.pageSize.width - leftMargin - rightMargin
 const newPageCutOff = 250
 const smallCutOff = 275
 
+const maxLengthAddress = 30
+const maxLengthCharge = 40
+
 // Incident Table
 const incidentX = {
   incidentOccuredX: leftMargin,
@@ -68,12 +71,12 @@ const peopleChargesX = {
 // Animal Table
 const animalX = {
   animalFirst: leftMargin,
-  animalSecond: leftMargin + .15 * widthPage,
-  animalSecondAnswer: leftMargin + .25 * widthPage,
-  animalFourth: leftMargin + .45 * widthPage,
-  animalFourthAnswer: leftMargin + .51 * widthPage,
-  animalFifth: leftMargin + .67 * widthPage,
-  animalFifthAnswer: leftMargin + .76 * widthPage
+  animalSecond: leftMargin + .10 * widthPage,
+  animalSecondAnswer: leftMargin + .20 * widthPage,
+  animalFourth: leftMargin + .40 * widthPage,
+  animalFourthAnswer: leftMargin + .46 * widthPage,
+  animalFifth: leftMargin + .62 * widthPage,
+  animalFifthAnswer: leftMargin + .71 * widthPage
 }
 
 const animalOwner = {
@@ -112,18 +115,44 @@ const createPdf = async (data) => {
     Array(4).fill(fontNormal)
   )
 
+  const [firstLine, secondLine] = textSplitter(data.locationLineOne, maxLengthAddress)
+
   addRow(incidentX, [
     `${cleanDate(data.occurredFrom)} to`,
     cleanDate(data.datetimeReported),
-    data.locationLineOne,
+    firstLine,
     data.jurisdiction
   ],
     Array(4).fill(fontBold)
   )
-  addRow(incidentX, 
-    [cleanDate(data.occurredTo), '', data.locationLineTwo, ''],
-    Array(4).fill(fontBold)
-  )
+
+  if (secondLine.length === 0) {
+    addRow(incidentX, [
+      cleanDate(data.occurredTo),
+      '',
+      data.locationLineTwo,
+      ''
+    ],
+      Array(4).fill(fontBold)
+    )
+  } else {
+    addRow(incidentX, [
+      cleanDate(data.occurredTo),
+      '',
+      secondLine,
+      ''
+    ],
+      Array(4).fill(fontBold)
+    )
+    addRow(incidentX, [
+      '',
+      '',
+      data.locationLineTwo,
+      ''
+    ],
+      Array(4).fill(fontBold)
+    )
+  }
 
   // Charges
   addSectionHeader('Charges')
@@ -133,10 +162,18 @@ const createPdf = async (data) => {
   )
 
   data.charges.forEach((charge, i) => {
+    const [firstLine, secondLine] = textSplitter(charge.charge, maxLengthCharge)
+
     addRow(chargeX,
-      [(i + 1).toString(), charge.charge, charge.law, charge.severity],
+      [(i + 1).toString(), firstLine, charge.law, charge.severity],
       Array(4).fill(fontBold)
     )
+    if (secondLine.length > 0) {
+      addRow(chargeX,
+        ['', secondLine, '', ''],
+        Array(4).fill(fontBold)
+      )
+    }
   })
 
   // Probable Cause
@@ -162,13 +199,13 @@ const createPdf = async (data) => {
 
     addRow(peopleHeaderX, [
       'Address: ',
-      people.addressLineOne,
+      people.addressLineOne.length ? people.addressLineOne : 'n/a',
       'Race:',
-      people.race,
+      people.race.length ? people.race : 'n/a',
       'Sex: ',
-      people.sex,
+      people.sex.length ? people.sex : 'n/a',
       'DOB: ',
-      people.dob,
+      people.dob.length ? people.dob : 'n/a',
       'Age: ',
       calculateAge(people.dob)
     ],
@@ -178,13 +215,13 @@ const createPdf = async (data) => {
       '',
       people.addressLineTwo,
       'H: ',
-      people.height,
+      people.height.length ? people.height : 'n/a',
       'W: ',
-      people.weight,
+      people.weight.length ? people.weight : 'n/a',
       'Hair: ',
-      people.hair,
+      people.hair.length ? people.hair : 'n/a',
       'Eye: ',
-      people.eye
+      people.eye.length ? people.eye : 'n/a'
     ], 
       [fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
@@ -192,25 +229,25 @@ const createPdf = async (data) => {
     y += 4
     addRow(peopleContactInfoX, [
       'Phone: ',
-      people.phoneNumber,
+      people.phoneNumber.length ? people.phoneNumber : 'n/a',
     ],
       [fontNormal, fontBold]
     )
     addRow(peopleContactInfoX, [
       'Email: ',
-      people.email
+      people.email.length ? people.email : 'n/a',
     ],
       [fontNormal, fontBold]
     )
     addRow(peopleContactInfoX, [
       'SSN: ',
-      people.ssn
+      people.ssn.length ? people.ssn : 'n/a',
     ],
       [fontNormal, fontBold]
     )
     addRow(peopleIdentifyX, [
       'License: ',
-      people.license,
+      people.license.length ? people.license : 'n/a',
       'State: ',
       people.howIdentify === 'Verbal' ? 'n/a' : people.state,
       'How Identify: ',
@@ -238,14 +275,26 @@ const createPdf = async (data) => {
     }
 
     filteredCharges.forEach(charge => {
+      const [firstLine, secondLine] = textSplitter(charge.charge, maxLengthCharge)
+
       addRow(peopleChargesX, [
-        charge.charge,
+        firstLine,
         charge.law,
         charge.chargeCount,
         charge.severity
       ], 
         Array(4).fill(fontBold)
       )
+      if (secondLine.length > 0) {
+        addRow(peopleChargesX, [
+          secondLine,
+          '',
+          '',
+          ''
+        ],
+          Array(4).fill(fontBold)
+        )
+      }
     })
     if (index !== data.people.length - 1) {
       doc.line(leftMargin, y, leftMargin + widthPage, y)
@@ -282,11 +331,11 @@ const createPdf = async (data) => {
     addRow(animalX, [
       '',
       'Animal ID:',
-      animal.animalId,
+      animal.animalId.length ? animal.animalId : 'n/a',
       'Chip #:',
-      animal.animalChip,
+      animal.animalChip.length ? animal.animalChip : 'n/a',
       'Dog Lic. #:',
-      animal.animalLicense
+      animal.animalLicense.length ? animal.animalLicense : 'n/a'
     ],
       [fontNormal, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
@@ -294,11 +343,11 @@ const createPdf = async (data) => {
     addRow(animalX, [
       '',
       'Species:',
-      animal.animalSpecies,
-      'Breed:',
-      animal.animalBreed,
+      animal.animalSpecies.length ? animal.animalSpecies : 'n/a',
       'Color:',
-      animal.animalColor
+      animal.animalColor.length ? animal.animalColor : 'n/a',
+      'Breed:',
+      animal.animalBreed.length ? animal.animalBreed : 'n/a',
     ],
       [fontNormal, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
@@ -306,11 +355,11 @@ const createPdf = async (data) => {
     addRow(animalX, [
       '',
       'Bite History:',
-      animal.animalBite,
+      animal.animalBite.length ? animal.animalBite : 'n/a',
       'Sex:',
-      animal.animalGender,
+      animal.animalGender.length ? animal.animalGender : 'n/a',
       'Altered:',
-      animal.animalAltered
+      animal.animalAltered.length ? animal.animalAltered : 'n/a'
     ],
       [fontNormal, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
@@ -318,11 +367,11 @@ const createPdf = async (data) => {
     addRow(animalX, [
       '',
       'Rabies Shot:',
-      animal.animalRabies,
+      animal.animalRabies.length ? animal.animalRabies : 'n/a',
       'Age:',
-      age,
+      age.length ? age : 'n/a',
       'DOB:',
-      animal.animalDob
+      animal.animalDob.length ? animal.animalDob : 'n/a'
     ],
       [fontNormal, fontNormal, fontBold, fontNormal, fontBold, fontNormal, fontBold]
     )
