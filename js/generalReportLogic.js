@@ -1,6 +1,7 @@
 const data = {
   charges: [],
   people: [],
+  animals: [],
   officers: []
 }
 
@@ -35,7 +36,7 @@ const addPeople = () => {
   updateTotalPeople()
 
   // Modal Data
-  modalData = {
+  const modalData = {
     id: person.id,
     appendHere: 'show-people',
     mainText: `${person.peopleType}: ${person.firstName} ${person.lastName}`,
@@ -61,6 +62,7 @@ const addCharges = () => {
     law: document.getElementById('law').value,
     severity: document.getElementById('severity').value,
     committedBy: document.getElementById('committedBy').value,
+    chargeCount: document.getElementById('chargeCount').value,
     id: self.crypto.randomUUID()
   }
 
@@ -69,7 +71,7 @@ const addCharges = () => {
   updateTotalCharges()
 
   // Modal Data
-  modalData = {
+  const modalData = {
     id: charge.id,
     appendHere: 'show-charge',
     mainText: `${charge.severity} by ${charge.committedBy}`,
@@ -79,9 +81,59 @@ const addCharges = () => {
   // Clear input fields after grabbing data
   document.getElementById('charge').value = ''
   document.getElementById('law').value = ''
+  document.getElementById('chargeCount').value = 1
 
   // Add Preview
   modalAddPreview(modalData)
+}
+
+// Add Animal
+const addAnimals = () => {
+  // Grab data
+  const animal = {
+    animalType: document.getElementById('animalType').value,
+    animalName: document.getElementById('animalName').value,
+    animalId: document.getElementById('animalId').value,
+    animalGender: document.getElementById('animalGender').value,
+    animalBite: document.getElementById('animalBite').value,
+    animalSpecies: document.getElementById('animalSpecies').value,
+    animalBreed: document.getElementById('animalBreed').value,
+    animalDob: document.getElementById('animalDob').value,
+    animalAge: document.getElementById('animalAge').value,
+    animalColor: document.getElementById('animalColor').value,
+    animalChip: document.getElementById('animalChip').value,
+    animalRabies: document.getElementById('animalRabies').value,
+    animalLicense: document.getElementById('animalLicense').value,
+    animalAltered: document.getElementById('animalAltered').value,
+    animalOwner: document.getElementById('animalOwner').value,
+    id: self.crypto.randomUUID()
+  }
+
+  // Update globals
+  data.animals.push(animal)
+  updateTotalaAnimals()
+
+  // Modal Data
+  const modalData = {
+    id: animal.id,
+    appendHere: 'show-animals',
+    mainText: `${animal.animalType}: ${animal.animalName} (${animal.animalSpecies})`,
+    children: [ createElement('label', { class: 'col-md-12', for: animal.id }, `Owner: ${animal.animalOwner}`) ]
+  }
+
+    // Clear input fields after grabbing data
+    Object.keys(animal).forEach(key => {
+      if (key !== 'id' &&
+          key !== 'animalType' &&
+          key !== 'animalGender' &&
+          key !== 'animalAltered' &&
+          key !== 'animalOwner' &&
+          key !== 'animalBite')
+        document.getElementById(key).value = ''
+    })
+  
+    // Add Preview
+    modalAddPreview(modalData)
 }
 
 // Add Officer
@@ -111,7 +163,7 @@ const addOfficers = () => {
   updateTotalOfficers()
 
   // Modal Data
-  modalData = {
+  const modalData = {
     id: officer.id,
     appendHere: 'show-officers',
     mainText: `${officer.officerName} (${officer.officerId})`,
@@ -160,6 +212,9 @@ const modalDelete = (modalType) => {
     case 'charges':
       id = 'show-charge'
       break
+    case 'animals':
+      id = 'show-animals'
+      break
     case 'people':
       id = 'show-people'
       break
@@ -168,6 +223,7 @@ const modalDelete = (modalType) => {
       break
     default:
       console.error('Invalid call of modalDelete')
+      return
   }
 
   const container = document.getElementById(id)
@@ -192,6 +248,7 @@ const modalDelete = (modalType) => {
   updateTotalCharges()
   updateTotalPeople()
   updateTotalOfficers()
+  updateTotalaAnimals()
 }
 
 // Update Suspect list in charges modal
@@ -206,10 +263,23 @@ const updateSuspectList = () => {
   })
 }
 
+// Update Owner List
+const updateOwnerList = () => {
+  const dropdown = document.getElementById('animalOwner')
+  dropdown.innerHTML = ''
+
+  data.people.forEach(person => {
+    const option = createElement('option', {}, `${person.firstName} ${person.lastName}`)
+    dropdown.appendChild(option)
+  })
+}
+
 // Set remaining data
 const setData = () => {
   data.officerReporting = document.getElementById("officerReporting").value
   data.ihsCase = document.getElementById("ihsCase").value
+  data.omnigoNumber = document.getElementById("omnigoNumber").value
+  data.drNumber = document.getElementById("drNumber").value
   data.occurredFrom = document.getElementById("occurredFrom").value
   data.occurredTo = document.getElementById("occurredTo").value
   data.datetimeReported = document.getElementById("datetimeReported").value
@@ -228,55 +298,23 @@ const previewPdf = async () => {
 
   const embed = document.getElementById('pdfPreview')
   embed.src = URL.createObjectURL(blob)
+  embed.style = 'display: initial;'
 }
 
 // Download Pdf
-const downloadPdf = async () => {
+const downloadFiles = async () => {
   setData()
 
   const pdf = await createPdf(data)
-  pdf.save(`${data.ihsCase}.pdf`)
+  pdf.save(`general-report-${data.ihsCase}.pdf`)
+
+  const a = document.createElement("a")
+  const file = new Blob([JSON.stringify(data)], {type: "application/json"})
+  a.href = URL.createObjectURL(file)
+  a.download = `general-report-${data.ihsCase}.json`
+  a.click()
 }
 
-// Currently used for testing
-const autoFill = () => {
-  fetch('./autoFill.json').then((response) => response.json()).then((json) => {
-    // Main Page
-    mainPageIds.forEach(id => {
-      data[id] = json[id]
-      document.getElementById(id).value = json[id]
-    })
-
-    // People
-    json.people.forEach(person => {
-      peopleIds.forEach(id => {
-        document.getElementById(id).value = person[id]
-      })
-      addPeople()
-    })
-
-    // Update Suspect list before adding charges
-    updateSuspectList()
-
-    // Charges
-    json.charges.forEach(charge => {
-      chargesIds.forEach(id => {
-        document.getElementById(id).value = charge[id]
-      })
-      addCharges()
-    })
-    
-    // Officers
-    json.officers.forEach(officer => {
-      officersIds.forEach(id => {
-        document.getElementById(id).value = officer[id]
-      })
-      officer.resource.forEach(checkbox => {
-        document.getElementById(checkbox.toLowerCase()).checked = true
-      })
-      addOfficers()
-    })
-  })
+const calculateAgeOnChange = (e) => {
+  document.getElementById('animalAge').value = calculateAge(e)
 }
-
-autoFill()

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Photo Log</title>
+
+    <!-- Bootstrap Style -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Our Style -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+      <div class ="row justify-content-center header">
+        <div class="col-md-1">
+          <img src="https://idahohumanesociety.org/wp-content/uploads/2020/10/Idaho-Humane-Society-Logo.svg", height="50" width="50">
+        </div>
+        <div class="col-md-8">
+          <h1>Idaho Human Society - Photo Log</h1>
+        </div> 
+      </div>
+      <div class="row">
+        <!-- Left Section -->
+        <div class="col-md-6">
+          <div class="row">
+              <!-- Officer Reporting -->
+              <div class="form-group col-md-6">
+                <label for="officerReporting">Officer Reporting</label>
+                <input type="text" class="form-control" id="officerReporting">
+              </div>
+              <!-- IHS Case Number -->
+              <div class="form-group col-md-6">
+                  <label for="ihsCase">IHS Case #</label>
+                  <input type="text" class="form-control" id="ihsCase">
+              </div>
+          </div>
+
+          <div class="row">
+            <!-- Omnigo Number -->
+            <div class="form-group col-md-6">
+                <label for="omnigoNumber">Omnigo #</label>
+                <input type="text" class="form-control" id="omnigoNumber">
+            </div>
+            <!-- DR Number -->
+            <div class="form-group col-md-6">
+                <label for="drNumber">DR #</label>
+                <input type="text" class="form-control" id="drNumber">
+            </div>
+          </div>
+          
+          <!-- Date Occured -->
+          <div class="row">
+              <div class="form-group col-md-12">
+                <label for="datetimeOccured">Date & Time Occured</label>
+                <input type="datetime-local" class="form-control" id="datetimeOccured">
+              </div>
+          </div>
+
+          <br>
+
+          <!-- Header for Photos -->
+          <div class="row">
+            <div class="col">
+                <p id="total-photos">Photos Added: 0</p>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#photosModal" onclick="resetPhoto()">Edit Photos</button>
+            </div>
+          </div>
+
+          <!-- Modal For Photos -->
+          <div class="modal fade" id="photosModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xxl" role="document">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="photoModalLabel">Photos (only add one at a time)</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <div class="modal-body">
+                          <div class="row">
+                              <!-- Inputs to add people -->
+                              <div class="col">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="form-group">
+                                      <label class="form-check-label" for="photoComments">Comments</labeL>
+                                      <textarea class="form-control" id="photoComments" rows="3"></textarea>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <button type="button" class="btn btn-info" onclick="photoUpload()">Select Photo To Be Added</button>
+                                    <input type="file" id="hiddenFile" style="display: none;" onchange="updateRadio()">
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-check" id="photoAddConfirm">
+                                      <input class="form-check-input" type="checkbox" id="photoSuccessfullyAdded" disabled>
+                                      <label class="form-check-label" for="photoSuccessfullyAdded" id="photoSuccessfullyAddedLabel">
+                                        Photo Successfully Added
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col" id="show-photos">
+                              </div>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-success" onclick="addPhoto()">Add</button>
+                          <button type="button" class="btn btn-danger" onclick="deletePhoto()">Delete</button>
+                          <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <button type="button" class="btn btn-success" onclick="downloadPhotoLog()">Download Photo Log Report</button>
+    </div>
+    </div>
+  
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- PDF JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script> 
+        const { jsPDF } = window.jspdf
+    </script>
+
+    <!-- Our JS -->
+    <script src="./js/constants.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/pdfHelperFunctions.js"></script>
+    <script src="./js/createPhotoLog.js"></script>
+    <script src="./js/photoLogLogic.js"></script>
+</body>

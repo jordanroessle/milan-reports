@@ -12,7 +12,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>General Report</h1>
+        <div class ="row justify-content-center header">
+          <div class="col-md-1">
+            <img src="https://idahohumanesociety.org/wp-content/uploads/2020/10/Idaho-Humane-Society-Logo.svg", height="50" width="50">
+          </div>
+          <div class="col-md-8">
+            <h1>Idaho Human Society - General Report</h1>
+          </div> 
+        </div>  
         <div class="row">
             <!-- Left Section -->
             <div class="col-md-6">
@@ -29,6 +36,18 @@
                         <input type="text" class="form-control" id="ihsCase">
                     </div>
                 </div>
+                <div class="row">
+                  <!-- Omnigo Number -->
+                  <div class="form-group col-md-6">
+                      <label for="omnigoNumber">Omnigo #</label>
+                      <input type="text" class="form-control" id="omnigoNumber">
+                  </div>
+                  <!-- DR Number -->
+                  <div class="form-group col-md-6">
+                      <label for="drNumber">DR #</label>
+                      <input type="text" class="form-control" id="drNumber">
+                  </div>
+               </div>
                 
                 <h2>Incident</h2>
                 <!-- Date Occured -->
@@ -141,24 +160,24 @@
                                           </div>
                                         </div>
                                         <div class="row">
-                                            <!-- Race -->
-                                            <div class="form-group col-md-3">
-                                                <label for="race">Race</label>
-                                                <input type="text" class="form-control" id="race">
-                                            </div>
-                                            <!-- Sex -->
-                                            <div class="form-group col-md-3">
-                                                <label for="sex">Sex</label>
-                                                <select id="sex" class="form-control">
-                                                    <option selected>M</option>
-                                                    <option>F</option>
-                                                </select>
-                                            </div>
-                                            <!-- Date of Birth -->
-                                            <div class="form-group col-md-6">
-                                                <label for="dob">DOB</label>
-                                                <input type="date" class="form-control" id="dob">
-                                            </div>
+                                          <!-- Race -->
+                                          <div class="form-group col-md-3">
+                                              <label for="race">Race</label>
+                                              <input type="text" class="form-control" id="race">
+                                          </div>
+                                          <!-- Sex -->
+                                          <div class="form-group col-md-3">
+                                              <label for="sex">Sex</label>
+                                              <select id="sex" class="form-control">
+                                                  <option selected>M</option>
+                                                  <option>F</option>
+                                              </select>
+                                          </div>
+                                          <!-- Date of Birth -->
+                                          <div class="form-group col-md-6">
+                                              <label for="dob">DOB</label>
+                                              <input type="date" class="form-control" id="dob">
+                                          </div>
                                         </div>
                                         <div class="row">
                                             <!-- Height -->
@@ -276,9 +295,13 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="form-group col-md-12">
+                                            <div class="form-group col-md-8">
                                                 <label for="committedBy">Committed By</label>
                                                 <select id="committedBy" class="form-control"></select>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                              <label for="chargeCount">Counts</label>
+                                              <input type="number" class="form-control" id="chargeCount">
                                             </div>
                                         </div>
                                     </div>
@@ -297,12 +320,150 @@
                     </div>
                 </div>
                 
-                <!-- Header for Other Officers Involved -->
+                <!-- Header for Animals Involved -->
                 <div class="row">
                     <div class="col">
-                        <p id="total-officers">Other Officers: 0</p>
+                        <p id="total-animals">Animals Involved: 0</p>
                     </div>
                     <div class="col">
+                        <button type="button" class="btn btn-outline-primary" onclick="updateOwnerList()" data-toggle="modal" data-target="#animalsModal">Edit Animals Involved</button>
+                    </div>
+                </div>
+
+                <!-- Modal For Animals -->
+                <div class="modal fade" id="animalsModal" tabindex="-1" role="dialog" aria-labelledby="animalsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="animalsModalLabel">Animals Involved</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- Inputs to add animals -->
+                                    <div class="col">
+                                        <div class="row">
+                                          <!-- Type -->
+                                          <div class="form-group col-md-4">
+                                            <label for="animalType">Type</label>
+                                            <select id="animalType" class="form-control">
+                                                <option selected>Suspect</option>
+                                                <option>Victim</option>
+                                            </select>
+                                          </div>
+                                          <div class="form-group col-md-8">
+                                              <label for="animalName">Name</label>
+                                              <input type="text" class="form-control" id="animalName">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="form-group col-md-6">
+                                            <label for="animalId">Animal ID</label>
+                                            <input type="text" class="form-control" id="animalId">
+                                          </div>
+                                          <div class="form-group col-md-6">
+                                            <label for="animalChip">Chip #</label>
+                                            <input type="text" class="form-control" id="animalChip">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="form-group col-md-6">
+                                            <label for="animalGender">Sex</label>
+                                            <select id="animalGender" class="form-control">
+                                              <option selected>Male</option>
+                                              <option>Female</option>
+                                            </select>
+                                          </div>
+                                          <!-- Altered -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalAltered">Altered</label>
+                                            <select id="animalAltered" class="form-control">
+                                              <option selected>Yes</option>
+                                              <option>No</option>
+                                            </select>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <!-- Species -->
+                                          <div class="form-group col-md-4">
+                                            <label for="animalSpecies">Species</label>
+                                            <input type="text" class="form-control" id="animalSpecies">
+                                          </div>
+                                          <!-- Breed -->
+                                          <div class="form-group col-md-4">
+                                            <label for="animalBreed">Breed</label>
+                                            <input type="text" class="form-control" id="animalBreed">
+                                          </div>
+                                          <!-- Color -->
+                                          <div class="form-group col-md-4">
+                                            <label for="animalColor">Color</label>
+                                            <input type="text" class="form-control" id="animalColor">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <!-- Date of Birth -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalDob">DOB</label>
+                                            <input type="date" class="form-control" id="animalDob" onchange="calculateAgeOnChange(this.value)">
+                                          </div>
+                                          <!-- Animal Age -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalAge">Age</label>
+                                            <input type="text" class="form-control" id="animalAge">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <!-- Date Rabies -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalRabies">Last Rabies Shot</label>
+                                            <input type="date" class="form-control" id="animalRabies">
+                                          </div>
+                                          <!-- Bite History -->
+                                          <div class="form-group col-md-6">
+                                            <label for="animalBite">Bite History</label>
+                                            <select id="animalBite" class="form-control">
+                                              <option selected>Yes</option>
+                                              <option>No</option>
+                                            </select>
+                                          </div>
+                                        </div>
+                                      <div class="row">
+                                        <!-- Dog License -->
+                                        <div class="form-group col-md-6">
+                                          <label for="animalLicense">Dog License #</label>
+                                          <input type="text" class="form-control" id="animalLicense">
+                                        </div>
+                                      </div>
+                                        <div class="row">
+                                          <div class="form-group col-md-12">
+                                            <label for="animalOwner">Ownership/Gaurdianship</label>
+                                            <select id="animalOwner" class="form-control"></select>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <!-- Show Animals -->
+                                    <div class="col" id="show-animals">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" onclick="addAnimals()">Add</button>
+                                <button type="button" class="btn btn-danger" onclick="modalDelete('animals')">Delete</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Header for Other Officers Involved -->
+                <div class="row">
+                  <div class="col">
+                      <p id="total-officers">Other Officers: 0</p>
+                  </div>
+                  <div class="col">
                         <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#officersModal">Edit Officers Involved</button>
                     </div>
                 </div>
@@ -367,12 +528,14 @@
             </div>
             <!-- Right Section -->
             <div class="col-md-6">
-                <embed id='pdfPreview'></embed>
+                <iframe style="display: none" id='pdfPreview'></iframe>
             </div>
         </div>
         <div class="footer">
+            <button type="button" class="btn btn-warning" onclick="buttonUpload()">Load File</button>
+            <input type="file" id="hiddenFile" style="display: none;" onchange="loadFile()">
             <button type="button" class="btn btn-success" onclick="previewPdf()">Preview</button>
-            <button type="button" class="btn btn-primary" onclick="downloadPdf()">Download</button>
+            <button type="button" class="btn btn-primary" onclick="downloadFiles()">Download</button>
         </div>
     </div>
 
@@ -391,7 +554,9 @@
     <script src="./js/constants.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/states.js"></script>
-    <script src="./js/createFile.js"></script>
-    <script src="./js/logic.js"></script>
+    <script src="./js/loadFile.js"></script>
+    <script src="./js/pdfHelperFunctions.js"></script>
+    <script src="./js/createGeneralReport.js"></script>
+    <script src="./js/generalReportLogic.js"></script>
 </body>
 </html>
