@@ -178,10 +178,10 @@ const createPdf = async (data) => {
 
   // Probable Cause
   addSectionHeader('Probable Cause')
-  y = wrapText(data.probableCause, leftMargin, leftMargin + widthPage, true)
+  y = wrapText(data.probableCause, leftMargin, leftMargin + widthPage, true, headerTexts, 'Probable Cause (cont)')
 
   // People Involved
-  addSectionHeader('People Involved')
+  !needNewPage(newPageCutOff, headerTexts, 'People Involved') && addSectionHeader('People Involved')
   data.people.forEach((people, index) => {
     needNewPage(newPageCutOff, headerTexts, 'People Involved (cont)')
     doc.setFontSize(sectionHeaderFontSize)
