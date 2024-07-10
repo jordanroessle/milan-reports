@@ -62,7 +62,7 @@ const addCharges = () => {
     charge: document.getElementById('charge').value,
     law: document.getElementById('law').value,
     severity: document.getElementById('severity').value,
-    committedBy: committedBy.selectedOptions[0].dataset.id,
+    committedBy: committedBy.selectedOptions?.[0]?.dataset?.id ??  document.getElementById('committedBy').value,
     chargeCount: document.getElementById('chargeCount').value,
     id: self.crypto.randomUUID()
   }
@@ -107,7 +107,7 @@ const addAnimals = () => {
     animalRabies: document.getElementById('animalRabies').value,
     animalLicense: document.getElementById('animalLicense').value,
     animalAltered: document.getElementById('animalAltered').value,
-    animalOwner: animalOwner.selectedOptions[0].dataset.id,
+    animalOwner: animalOwner.selectedOptions?.[0]?.dataset?.id ?? document.getElementById('animalOwner').value,
     id: self.crypto.randomUUID()
   }
 
