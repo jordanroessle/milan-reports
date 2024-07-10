@@ -103,31 +103,31 @@ const addPhotoLog = (data, index, width, leftBound, centerBound) => {
 
 // Create Header
 const addHeader = (headerTexts) => {
-    // Header
-    doc.setFont(...fontBold)
-    doc.setFontSize(titleFontSize)
-    addText(headerTexts.headerText, alignCenter(headerTexts.headerText))
-  
-    // Sub Header
-    doc.setFontSize(subTitleFontSize)
-    addText(headerTexts.subHeaderText, alignCenter(headerTexts.subHeaderText))
-  
-    // Top Right Boxes
-    doc.setFont(...fontNormal)
-    doc.setFontSize(sectionHeaderFontSize)
-  
-    let longestWidth = 0
-    headerTexts.boxes.forEach((box, i) => {
-      if (rectW(doc.getTextDimensions(box).w) > rectW(doc.getTextDimensions(longestWidth).w)) {
-        longestWidth = headerTexts.boxes[i]
-      }
-    })
+  // Header
+  doc.setFont(...fontBold)
+  doc.setFontSize(titleFontSize)
+  addText(headerTexts.headerText, alignCenter(headerTexts.headerText))
 
-    headerTexts.boxes.forEach(box => {
-      addHeaderRectangle(longestWidth, box)
-    })
+  // Sub Header
+  doc.setFontSize(subTitleFontSize)
+  addText(headerTexts.subHeaderText, alignCenter(headerTexts.subHeaderText))
 
-    y += 1
+  // Top Right Boxes
+  doc.setFont(...fontNormal)
+  doc.setFontSize(sectionHeaderFontSize)
+
+  let longestWidth = 0
+  headerTexts.boxes.forEach((box, i) => {
+    if (rectW(doc.getTextDimensions(box).w) > rectW(doc.getTextDimensions(longestWidth).w)) {
+      longestWidth = headerTexts.boxes[i]
+    }
+  })
+
+  headerTexts.boxes.forEach(box => {
+    addHeaderRectangle(longestWidth, box)
+  })
+
+  y += 1
 }
 
 // Create Section Headers
@@ -138,7 +138,7 @@ const addSectionHeader = (text) => {
 
   doc.rect(leftMargin, y, rectWidth, rectHeight)
 
-  const splitX = leftMargin + 0.3 * rectWidth
+  const splitX = leftMargin + 0.31 * rectWidth
   doc.line(splitX, y, splitX, y + rectHeight)
 
   doc.setFontSize(sectionHeaderFontSize)
@@ -166,7 +166,7 @@ const addRow = (divider, texts, fonts) => {
 }
 
 // Wrap Text
-const wrapText = (text, x1, x2, shouldPrint) => {
+const wrapText = (text, x1, x2, shouldPrint, headerTexts, sectionHeader) => {
   const lineHeight = doc.getTextDimensions(text).h
 
   const paragraphs = text.split('\n')
@@ -184,8 +184,15 @@ const wrapText = (text, x1, x2, shouldPrint) => {
         line += (line === '' ? '' : ' ') + word;
       } else {
         shouldPrint && doc.text(line, x1, yPosition);
-        yPosition += lineHeight;
         line = word;
+        yPosition += lineHeight;
+        if (yPosition > doc.internal.pageSize.height - 30) {
+          doc.addPage()
+          y = topMargin
+          addHeader(headerTexts)
+          addSectionHeader(sectionHeader)
+          yPosition = y
+        }
       }
     }
     shouldPrint && doc.text(line, x1, yPosition)

@@ -56,12 +56,13 @@ const addPeople = () => {
 
 // Add Charge
 const addCharges = () => {
+  const committedBy = document.getElementById('committedBy');
   // Grab Data
   const charge = {
     charge: document.getElementById('charge').value,
     law: document.getElementById('law').value,
     severity: document.getElementById('severity').value,
-    committedBy: document.getElementById('committedBy').value,
+    committedBy: committedBy.selectedOptions?.[0]?.dataset?.id ??  document.getElementById('committedBy').value,
     chargeCount: document.getElementById('chargeCount').value,
     id: self.crypto.randomUUID()
   }
@@ -74,7 +75,7 @@ const addCharges = () => {
   const modalData = {
     id: charge.id,
     appendHere: 'show-charge',
-    mainText: `${charge.severity} by ${charge.committedBy}`,
+    mainText: `${charge.severity} by ${committedBy.value}`,
     children: [createElement('label', { class: 'col-md-12', for: charge.id }, charge.charge)]
   }
 
@@ -89,6 +90,7 @@ const addCharges = () => {
 
 // Add Animal
 const addAnimals = () => {
+  const animalOwner = document.getElementById('animalOwner')
   // Grab data
   const animal = {
     animalType: document.getElementById('animalType').value,
@@ -105,7 +107,7 @@ const addAnimals = () => {
     animalRabies: document.getElementById('animalRabies').value,
     animalLicense: document.getElementById('animalLicense').value,
     animalAltered: document.getElementById('animalAltered').value,
-    animalOwner: document.getElementById('animalOwner').value,
+    animalOwner: animalOwner.selectedOptions?.[0]?.dataset?.id ?? document.getElementById('animalOwner').value,
     id: self.crypto.randomUUID()
   }
 
@@ -117,8 +119,12 @@ const addAnimals = () => {
   const modalData = {
     id: animal.id,
     appendHere: 'show-animals',
-    mainText: `${animal.animalType}: ${animal.animalName} (${animal.animalSpecies})`,
-    children: [ createElement('label', { class: 'col-md-12', for: animal.id }, `Owner: ${animal.animalOwner}`) ]
+    mainText: `${animal.animalType}: ${animal.animalName} ${animal.animalSpecies ? `(${animal.animalSpecies})` : ''}`,
+    children: [ createElement(
+      'label', 
+      { class: 'col-md-12', for: animal.id }, 
+      `Owner: ${animalOwner.value}`
+    ) ]
   }
 
     // Clear input fields after grabbing data
@@ -258,7 +264,7 @@ const updateSuspectList = () => {
 
   const suspects = data.people.filter(x => x.peopleType === 'Suspect')
   suspects.forEach(suspect => {
-    const option = createElement('option', {}, `${suspect.firstName} ${suspect.lastName}`)
+    const option = createElement('option', { 'data-id': suspect.id }, `${suspect.firstName ?? ''} ${suspect.lastName ?? ''}`)
     dropdown.appendChild(option)
   })
 }
@@ -268,8 +274,12 @@ const updateOwnerList = () => {
   const dropdown = document.getElementById('animalOwner')
   dropdown.innerHTML = ''
 
+  dropdown.appendChild(createElement('option', {
+    'data-id': 'noOwner' 
+  }, 'No Owner Specified'))
+
   data.people.forEach(person => {
-    const option = createElement('option', {}, `${person.firstName} ${person.lastName}`)
+    const option = createElement('option', { 'data-id': person.id }, `${person.firstName ?? ''} ${person.lastName ?? ''}`)
     dropdown.appendChild(option)
   })
 }

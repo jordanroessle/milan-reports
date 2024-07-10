@@ -178,10 +178,10 @@ const createPdf = async (data) => {
 
   // Probable Cause
   addSectionHeader('Probable Cause')
-  y = wrapText(data.probableCause, leftMargin, leftMargin + widthPage, true)
+  y = wrapText(data.probableCause, leftMargin, leftMargin + widthPage, true, headerTexts, 'Probable Cause (cont)')
 
   // People Involved
-  addSectionHeader('People Involved')
+  !needNewPage(newPageCutOff, headerTexts, 'People Involved') && addSectionHeader('People Involved')
   data.people.forEach((people, index) => {
     needNewPage(newPageCutOff, headerTexts, 'People Involved (cont)')
     doc.setFontSize(sectionHeaderFontSize)
@@ -259,8 +259,7 @@ const createPdf = async (data) => {
     y += 4
     // Find charges by people
     const filteredCharges = data.charges.filter(charge =>
-      charge.committedBy.split(' ')[0] === people.firstName 
-      && charge.committedBy.split(' ')[1] === people.lastName
+      charge.committedBy === people.id
     )
 
     if (filteredCharges.length > 0) {
@@ -380,19 +379,20 @@ const createPdf = async (data) => {
 
     // Find owner
     const owner = data.people.find(person =>
-      animal.animalOwner.split(' ')[0] === person.firstName 
-      && animal.animalOwner.split(' ')[1] === person.lastName
+      person.id === animal.animalOwner
     )
 
-    addRow(animalOwner, ['Owner/Gaurdian', 'Phone', 'Address'],
-     Array(3).fill(fontNormal)
-    )
-    addRow(animalOwner, [animal.animalOwner, owner.phoneNumber, owner.addressLineOne],
-      Array(3).fill(fontBold)
-    )
-    addRow(animalOwner, ['', '', owner.addressLineTwo],
-      Array(3).fill(fontBold)
-    )
+    if(owner) {
+      addRow(animalOwner, ['Owner/Gaurdian', 'Phone', 'Address'],
+      Array(3).fill(fontNormal)
+      )
+      addRow(animalOwner, [`${owner.firstName} ${owner.lastName}`, owner.phoneNumber, owner.addressLineOne],
+        Array(3).fill(fontBold)
+      )
+      addRow(animalOwner, ['', '', owner.addressLineTwo],
+        Array(3).fill(fontBold)
+      )
+    }
 
     y += 1
     // Separation Line
