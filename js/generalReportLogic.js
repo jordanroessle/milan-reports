@@ -91,7 +91,9 @@ const addCharges = () => {
 // Add Animal
 const addAnimals = () => {
   const animalOwner = document.getElementById('animalOwner')
-  // Grab data
+  // Grab data - collect all selected owner IDs
+  const selectedOwnerIds = Array.from(animalOwner.selectedOptions).map(option => option.dataset.id)
+
   const animal = {
     animalType: document.getElementById('animalType').value,
     animalName: document.getElementById('animalName').value,
@@ -107,7 +109,7 @@ const addAnimals = () => {
     animalRabies: document.getElementById('animalRabies').value,
     animalLicense: document.getElementById('animalLicense').value,
     animalAltered: document.getElementById('animalAltered').value,
-    animalOwner: animalOwner.selectedOptions?.[0]?.dataset?.id ?? document.getElementById('animalOwner').value,
+    animalOwner: selectedOwnerIds.length > 0 ? selectedOwnerIds : [],
     id: self.crypto.randomUUID()
   }
 
@@ -115,15 +117,18 @@ const addAnimals = () => {
   data.animals.push(animal)
   updateTotalaAnimals()
 
+  // Create owner names for display
+  const ownerNames = Array.from(animalOwner.selectedOptions).map(option => option.text).join(', ')
+
   // Modal Data
   const modalData = {
     id: animal.id,
     appendHere: 'show-animals',
     mainText: `${animal.animalType}: ${animal.animalName} ${animal.animalSpecies ? `(${animal.animalSpecies})` : ''}`,
     children: [ createElement(
-      'label', 
-      { class: 'col-md-12', for: animal.id }, 
-      `Owner: ${animalOwner.value}`
+      'label',
+      { class: 'col-md-12', for: animal.id },
+      `Owner(s): ${ownerNames || 'No Owner Specified'}`
     ) ]
   }
 

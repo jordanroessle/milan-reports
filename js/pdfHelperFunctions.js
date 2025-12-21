@@ -62,43 +62,95 @@ const addPhotoLog = (data, index, width, leftBound, centerBound) => {
 
   doc.setFontSize(sectionHeaderFontSize)
 
-  // Counter
-  addText(`Image #${index + 1}`, textLeftBoundary)
-  y += 1
-
-  // Comments
-  doc.setFont(...fontBold)
-  y = wrapText(data.comments[index], textLeftBoundary, textRightBoundary, true)
-  doc.setFont(...fontNormal)
-
-  const imageLeftPlacement = textLeftBoundary + (textRightBoundary - textLeftBoundary - imageWidth) / 2 
-
-  // Image
-  const image = new Image()
-  image.src = data.imageSrc[index]
-  doc.addImage(image, 'JPEG', imageLeftPlacement, y + 1, imageWidth, imageHeight)
-
-  y += imageHeight - initialY + 2
-
-  if (index % 2 === 0) {
-    const currentHeight = y
-    let heightToUse = y
-    if (data.imageSrc[index + 1]) {
-      y = initialY + 6 + doc.getTextDimensions('nom').h + 1
-      y = wrapText(data.comments[index + 1], textLeftBoundary, textRightBoundary, false)
-      y += imageHeight - initialY + 2
-
-      heightToUse = currentHeight > y ? currentHeight : y
-      heightDiff = heightToUse - y
-      doc.rect(centerBound, initialY, width, heightToUse)
+  // Only show counter and image if imageSrc is not null
+  if (data.imageSrc[index] !== null) {
+    // Calculate actual image number (counting only non-null entries)
+    let imageNumber = 1
+    for (let i = 0; i < index; i++) {
+      if (data.imageSrc[i] !== null) {
+        imageNumber++
+      }
     }
-    doc.rect(leftBound, initialY, width, heightToUse)
-    return initialY
+
+    // Counter
+    addText(`Image #${imageNumber}`, textLeftBoundary)
+    y += 1
+
+    const imageLeftPlacement = textLeftBoundary + (textRightBoundary - textLeftBoundary - imageWidth) / 2
+
+    // Image
+    const image = new Image()
+    image.src = data.imageSrc[index]
+    doc.addImage(image, 'JPEG', imageLeftPlacement, y + 1, imageWidth, imageHeight)
+
+    y += imageHeight + 6
+  } else {
+    // Find the previous non-null image index for the "cont..." label
+    let prevImageIndex = index - 1
+    while (prevImageIndex >= 0 && data.imageSrc[prevImageIndex] === null) {
+      prevImageIndex--
+    }
+
+    // Calculate the actual image number (count non-null entries before prevImageIndex, then add 1)
+    let imageNumber = 0
+    for (let i = 0; i <= prevImageIndex; i++) {
+      if (data.imageSrc[i] !== null) {
+        imageNumber++
+      }
+    }
+
+    addText(`Image #${imageNumber} continued`, textLeftBoundary)
+    y += doc.getTextDimensions('nom').h + 1
   }
 
-  const returnMe = y + initialY + heightDiff
-  heightDiff = 0
-  return returnMe
+  // Comments
+  const maxWords = data.imageSrc[index] ? 175 : 300;
+  const words = data.comments[index].split(' ')
+  const splicedWords = words.slice(0, maxWords)
+  const secondSplice = words.slice(maxWords);
+
+  doc.setFont(...fontBold)
+  y = wrapText(splicedWords.join(' '), textLeftBoundary, textRightBoundary, true)
+
+  // If there are overflow words, add a new entry with null imageSrc
+  if (secondSplice.length > 0) {
+    data.imageSrc.splice(index + 1, 0, null)
+    data.comments.splice(index + 1, 0, secondSplice.join(' '))
+  }
+
+  doc.setFont(...fontNormal)
+
+  const finalY = y
+
+  if (index % 2 === 0) {
+    // Left box - store height and only draw if there's no right box
+    heightDiff = finalY - initialY
+
+    if (data.imageSrc[index + 1] === undefined) {
+      const leftHeight = finalY - initialY
+      const maxBoxHeight = doc.internal.pageSize.height - initialY - 20
+      const heightToUse = Math.min(leftHeight, maxBoxHeight)
+
+      doc.rect(leftBound, initialY, width, heightToUse)
+    }
+    return initialY
+  } else {
+    // Right box - draw both boxes with maximum height to cover all text
+    const rightHeight = finalY - initialY
+    const leftHeight = heightDiff
+
+    // Use maximum of the two heights to ensure all text is covered
+    const maxHeight = Math.max(leftHeight, rightHeight)
+    const maxBoxHeight = doc.internal.pageSize.height - initialY - 20
+    const heightToUse = Math.min(maxHeight, maxBoxHeight)
+
+    // Draw both boxes
+    doc.rect(leftBound, initialY, width, heightToUse)
+    doc.rect(centerBound, initialY, width, heightToUse)
+
+    heightDiff = 0
+    return initialY
+  }
 }
 
 // Create Header
@@ -186,7 +238,7 @@ const wrapText = (text, x1, x2, shouldPrint, headerTexts, sectionHeader) => {
         shouldPrint && doc.text(line, x1, yPosition);
         line = word;
         yPosition += lineHeight;
-        if (yPosition > doc.internal.pageSize.height - 30) {
+        if (yPosition > doc.internal.pageSize.height - 30 && headerTexts) {
           doc.addPage()
           y = topMargin
           addHeader(headerTexts)

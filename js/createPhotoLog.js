@@ -32,15 +32,15 @@ const createPhotoLog = async (data) => {
       `Omnigo #: ${data.omnigoNumber}`,
       `DR #: ${data.drNumber}`
      ]
-    }
+  }
   
   addHeader(headerTexts)
   y += 2
 
   photoDates(data)
 
-  data.imageSrc.forEach((image, index) => {
-    if (index !== 0 && index % 4 == 0) {
+  for (let index = 0; index < data.imageSrc.length; index++) {
+    if (index !== 0 && index % 2 == 0) {
       needNewPagePhotos(headerTexts, data)
     }
 
@@ -51,7 +51,7 @@ const createPhotoLog = async (data) => {
       leftMargin,
       leftMargin + widthPage / 2
     )
-  })
+  }
 
   return doc
 }

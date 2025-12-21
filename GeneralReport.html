@@ -122,6 +122,7 @@
                                                     <option>Victim</option>
                                                     <option>Witness</option>
                                                     <option>Complainant</option>
+                                                    <option>Person with Knowledge</option>
                                                 </select>
                                             </div>
                                             <!-- SSN -->
@@ -171,6 +172,7 @@
                                               <select id="sex" class="form-control">
                                                   <option selected>M</option>
                                                   <option>F</option>
+                                                  <option>Unknown</option>
                                               </select>
                                           </div>
                                           <!-- Date of Birth -->
@@ -374,6 +376,7 @@
                                             <select id="animalGender" class="form-control">
                                               <option selected>Male</option>
                                               <option>Female</option>
+                                              <option>Unknown</option>
                                             </select>
                                           </div>
                                           <!-- Altered -->
@@ -382,6 +385,7 @@
                                             <select id="animalAltered" class="form-control">
                                               <option selected>Yes</option>
                                               <option>No</option>
+                                              <option>Unknown</option>
                                             </select>
                                           </div>
                                         </div>
@@ -439,7 +443,8 @@
                                         <div class="row">
                                           <div class="form-group col-md-12">
                                             <label for="animalOwner">Ownership/Gaurdianship</label>
-                                            <select id="animalOwner" class="form-control"></select>
+                                            <select id="animalOwner" class="form-control" multiple size="5"></select>
+                                            <small class="form-text text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple owners</small>
                                           </div>
                                         </div>
                                     </div>

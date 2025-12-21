@@ -304,7 +304,9 @@ const createPdf = async (data) => {
   needNewPage(newPageCutOff, headerTexts)
 
   // Animals
-  addSectionHeader('Animals Involved')
+  if (data.animals.length) {
+    addSectionHeader('Animals Involved')
+  }
   data.animals.forEach((animal, index) => {
     //  Calculate Age
     let age = ''
@@ -377,21 +379,26 @@ const createPdf = async (data) => {
 
     y += 4
 
-    // Find owner
-    const owner = data.people.find(person =>
-      person.id === animal.animalOwner
+    // Find all owners (supports multiple owners now)
+    const ownerIds = Array.isArray(animal.animalOwner) ? animal.animalOwner : [animal.animalOwner]
+    const owners = data.people.filter(person =>
+      ownerIds.includes(person.id)
     )
 
-    if(owner) {
+    if(owners.length > 0) {
       addRow(animalOwner, ['Owner/Gaurdian', 'Phone', 'Address'],
-      Array(3).fill(fontNormal)
+        Array(3).fill(fontNormal)
       )
-      addRow(animalOwner, [`${owner.firstName} ${owner.lastName}`, owner.phoneNumber, owner.addressLineOne],
-        Array(3).fill(fontBold)
-      )
-      addRow(animalOwner, ['', '', owner.addressLineTwo],
-        Array(3).fill(fontBold)
-      )
+      owners.forEach(owner => {
+        addRow(animalOwner, [`${owner.firstName} ${owner.lastName}`, owner.phoneNumber, owner.addressLineOne],
+          Array(3).fill(fontBold)
+        )
+        if(owner.addressLineTwo) {
+          addRow(animalOwner, ['', '', owner.addressLineTwo],
+            Array(3).fill(fontBold)
+          )
+        }
+      })
     }
 
     y += 1
@@ -405,7 +412,9 @@ const createPdf = async (data) => {
   needNewPage(newPageCutOff, headerTexts)
 
   // Officers Involved
-  addSectionHeader('Other Officers Involved')
+  if (data.officers.length) {
+    addSectionHeader('Other Officers Involved')
+  }
   y += 2
   doc.setFont(...fontBold)
   data.officers.forEach(officer => {
