@@ -51,7 +51,8 @@ const addHeaderRectangle = (sizing, text) => {
 }
 
 const addPhotoLog = (data, index, width, leftBound, centerBound) => {
-  const boundToUse = index % 2 === 0 ? leftBound : centerBound
+  const position = index % 4
+  const boundToUse = (position === 0 || position === 2) ? leftBound : centerBound
 
   const initialY = y
   y += 6
@@ -104,10 +105,31 @@ const addPhotoLog = (data, index, width, leftBound, centerBound) => {
   }
 
   // Comments
-  const maxWords = data.imageSrc[index] ? 175 : 300;
-  const words = data.comments[index].split(' ')
-  const splicedWords = words.slice(0, maxWords)
-  const secondSplice = words.slice(maxWords);
+  const lineHeight = doc.getTextDimensions('test').h;
+  const maxRows = data.imageSrc[index] ? 3 : 18;
+  const maxRowHeight = lineHeight * maxRows + 1;
+  const startY = y;
+
+  const words = data.comments[index].split(' ');
+  let wordCount = 0;
+
+  // Find max words that fit within maxRows
+  for (let i = 1; i <= words.length; i++) {
+    y = startY; // Reset y before each test
+    const testText = words.slice(0, i).join(' ');
+    const resultY = wrapText(testText, textLeftBoundary, textRightBoundary, false);
+
+    if (resultY - startY  <= maxRowHeight) {
+      wordCount = i;
+    } else {
+      break;
+    }
+  }
+
+  y = startY; // Reset y before actual print
+
+  const splicedWords = words.slice(0, wordCount);
+  const secondSplice = words.slice(wordCount);
 
   doc.setFont(...fontBold)
   y = wrapText(splicedWords.join(' '), textLeftBoundary, textRightBoundary, true)
@@ -122,7 +144,7 @@ const addPhotoLog = (data, index, width, leftBound, centerBound) => {
 
   const finalY = y
 
-  if (index % 2 === 0) {
+  if (position === 0 || position === 2) {
     // Left box - store height and only draw if there's no right box
     heightDiff = finalY - initialY
 
@@ -149,6 +171,12 @@ const addPhotoLog = (data, index, width, leftBound, centerBound) => {
     doc.rect(centerBound, initialY, width, heightToUse)
 
     heightDiff = 0
+
+    // If this is position 1 (top right), move y down to start the bottom row
+    if (position === 1) {
+      return initialY + heightToUse + 6
+    }
+
     return initialY
   }
 }

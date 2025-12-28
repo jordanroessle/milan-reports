@@ -40,7 +40,7 @@ const createPhotoLog = async (data) => {
   photoDates(data)
 
   for (let index = 0; index < data.imageSrc.length; index++) {
-    if (index !== 0 && index % 2 == 0) {
+    if (index !== 0 && index % 4 == 0) {
       needNewPagePhotos(headerTexts, data)
     }
 
